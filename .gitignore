@@ -1,2 +1,5 @@
 dist
 MANIFEST
+coverage
+.coverage
+./**/*.pyc
