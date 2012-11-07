@@ -23,7 +23,7 @@ class TestUserAgent(unittest.TestCase):
             ]
 		}
 
-		self._ua.addField("Module", fields)
+		self._ua.add_field("Module", fields)
 		uastring = str(self._ua)
 		self.assertRegexpMatches(
 			uastring,
@@ -32,14 +32,13 @@ class TestUserAgent(unittest.TestCase):
 
 	def test_cant_redefine(self):
 		with self.assertRaises(KeyError) as cm:
-			self._ua.addField(
+			self._ua.add_field(
 				"OS",
 				{
 					"name": "Haiku",
 					"version": "1.0-alpha3"
 				}
 			)
-			addField("Foo", [('name', 'foo'), ('version', 5)])
 
 		the_exception = cm.exception
 		self.assertEqual(the_exception.message, "Unable to redefine field OS")
@@ -48,10 +47,10 @@ class TestUserAgent(unittest.TestCase):
 		field = 13
 		data = 13
 		with self.assertRaises(Exception):
-			self._ua.addField(field, data)
+			self._ua.add_field(field, data)
 
 		field = 13
 		data = ""
 		with self.assertRaises(Exception):
-			self._ua.addField(field, data)
+			self._ua.add_field(field, data)
 			str(self._ua)

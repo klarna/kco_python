@@ -20,7 +20,7 @@ import sys
 import os
 
 
-class UserAgent():
+class UserAgent(object):
     '''UserAgent string builder Class'''
 
     def __init__(self):
@@ -34,15 +34,16 @@ class UserAgent():
             },
             "OS": {
                 "name": os.uname()[0],
-                "version": os.uname()[3]
+                "version": os.uname()[2]
             },
             "Language": {
                 "name": "Python",
-                "version": sys.version_info
+                "version": ".".join(map(str, sys.version_info[:3])),
+                "options": [sys.subversion[0]]
             }
         }
 
-    def addField(self, field, data):
+    def add_field(self, field, data):
         '''Add a new field to the user agent
 
         `field` Name of field
