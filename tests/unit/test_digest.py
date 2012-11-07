@@ -9,7 +9,7 @@ class TestDigest(unittest.TestCase):
     def test_create_digest(self):
         data = '{"eid":1245,"goods_list":[{"artno":"id_1","name":'\
             '"product","price":12345,"vat":25,"qty":1}],"currency":"SEK"'\
-            ',"country":"SWE","language":"SV"}'
+            ',"country":"SWE","language":"SV"}'.encode('utf-8')
 
         digester = create_digester('mySecret')
         self.assertEquals(self.expected, digester(data))

@@ -26,8 +26,11 @@ def create_digester(secret):
     `secret` shared secret
     '''
 
+    secret = secret.encode('utf-8')
+
     def digester(string):
         '''Creates a digest hash'''
-        return b64encode(hashlib.sha256(string + secret).digest())
+        data = string + secret
+        return b64encode(hashlib.sha256(data).digest()).decode('utf-8')
 
     return digester
