@@ -31,7 +31,7 @@ class TestUserAgent(unittest.TestCase):
 		)
 
 	def test_cant_redefine(self):
-		with self.assertRaises(KeyError) as cm:
+		with self.assertRaises(ValueError) as cm:
 			self._ua.add_field(
 				"OS",
 				{
@@ -41,7 +41,7 @@ class TestUserAgent(unittest.TestCase):
 			)
 
 		the_exception = cm.exception
-		self.assertEqual(the_exception.message, "Unable to redefine field OS")
+		self.assertEqual(str(the_exception), "Unable to redefine field OS")
 
 	def test_invalid_parameter(self):
 		field = 13

@@ -52,7 +52,7 @@ class UserAgent(object):
 
         field = str(field)
         if field in self._fields:
-            raise KeyError("Unable to redefine field %s" % (field))
+            raise ValueError("Unable to redefine field %s" % (field))
 
         self._fields[field] = dict(data)
 
