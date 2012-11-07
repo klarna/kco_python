@@ -32,7 +32,7 @@ class Connector(object):
         headers = response.info()
 
         if data:
-            resource.parse(json.loads(data))
+            resource.parse(json.loads(data.decode('utf-8')))
 
         if response.code == 201 and 'location' in headers:
             resource.location = headers['location']
@@ -53,7 +53,7 @@ class Connector(object):
         content_type = resource.content_type
         resource.parse
 
-        req = Request(options.get('url', resource.location))
+        req = Request(options.get('url', None) or resource.location)
         req.resource = resource
         req.add_header('Accept', content_type)
 
@@ -79,6 +79,8 @@ class AuthorizationHandler(BaseHandler):
             'Klarna %s' % self.digester(request.data))
         return request
 
+    https_request = http_request
+
 
 class UserAgentHandler(BaseHandler):
     '''Handler that adds a custom user-agent'''
@@ -87,7 +89,7 @@ class UserAgentHandler(BaseHandler):
         self._ua = ua
 
     def http_request(self, request):
-        request.add_header('User-Agent', str(self._ua))
+        request.add_unredirected_header('User-agent', str(self._ua))
         return request
 
     https_request = http_request
