@@ -1,5 +1,6 @@
 import unittest
 from klarnacheckout.digest import create_digester
+from hamcrest import assert_that, equal_to
 
 
 class TestDigest(unittest.TestCase):
@@ -12,4 +13,4 @@ class TestDigest(unittest.TestCase):
             ',"country":"SWE","language":"SV"}'.encode('utf-8')
 
         digester = create_digester('mySecret')
-        self.assertEquals(self.expected, digester(data))
+        assert_that(digester(data), equal_to(self.expected))

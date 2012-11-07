@@ -1,6 +1,8 @@
 import unittest
 from klarnacheckout.order import Order
 from mock import Mock
+from hamcrest import assert_that, equal_to, greater_than, instance_of, is_in
+from tests.matchers import called_once_with, assert_raises
 
 
 class TestOrder(unittest.TestCase):
@@ -11,25 +13,27 @@ class TestOrder(unittest.TestCase):
 
     def test_contenttype(self):
         Order.content_type = "application/json"
-        self.assertEqual("application/json", self._order.get_content_type())
+        assert_that(
+            self._order.get_content_type(),
+            equal_to("application/json"))
 
     def test_getlocation_empty(self):
-        self.assertEqual(self._order.location, None)
+        assert_that(self._order.location, equal_to(None))
 
     def test_setLocation(self):
         url = "http://foo"
         self._order.location = url
-        self.assertEqual(url, self._order.location)
+        assert_that(self._order.location, equal_to(url))
 
     def test_setlocation_type(self):
         url = 5
         self._order.location = url
-        self.assertIsInstance(self._order.location, str)
+        assert_that(self._order.location, instance_of(str))
 
     def test_parse_marshal_identity(self):
         data = {"foo": "boo"}
         self._order.parse(data)
-        self.assertEqual(data, self._order.marshal())
+        assert_that(self._order.marshal(), equal_to(data))
 
     def test_marshal_has_correct_keys(self):
         key1 = "testKey1"
@@ -42,15 +46,15 @@ class TestOrder(unittest.TestCase):
 
         marshaldata = self._order.marshal()
 
-        self.assertTrue(key1 in marshaldata)
-        self.assertTrue(key2 in marshaldata)
-        self.assertEqual(
+        assert_that(key1, is_in(marshaldata))
+        assert_that(key2, is_in(marshaldata))
+        assert_that(
             dict(self._order),
-            {"testKey1": "testValue1", "testKey2": "testValue2"}
+            equal_to({"testKey1": "testValue1", "testKey2": "testValue2"})
         )
 
-        self.assertEqual(value1, marshaldata[key1])
-        self.assertEqual(value2, marshaldata[key2])
+        assert_that(value1, marshaldata[key1])
+        assert_that(value2, marshaldata[key2])
 
     def test_set_get_values(self):
         key = "testKey1"
@@ -59,25 +63,25 @@ class TestOrder(unittest.TestCase):
         value2 = "testKey2"
         self._order[key] = value2
 
-        self.assertEqual(value2, self._order[key])
+        assert_that(self._order[key], equal_to(value2))
 
     def test_set_invalid_key(self):
         key = {"1": "2"}
         value = "testValue"
 
-        with self.assertRaises(TypeError):
+        with assert_raises(TypeError):
             self._order[key] = value
 
     def test_get_invalid_key(self):
         key = {"1": "2"}
 
-        with self.assertRaises(TypeError):
+        with assert_raises(TypeError):
             self._order[key]
 
     def test_get_unavailable_key(self):
         key = "test"
 
-        with self.assertRaises(KeyError):
+        with assert_raises(KeyError):
             self._order[key]
 
     def test_create(self):
@@ -102,7 +106,7 @@ class TestOrder(unittest.TestCase):
 
         self._connector.apply.assert_called_once_with(
             "GET", self._order, {"url": uri})
-        self.assertEqual(uri, self._order.location)
+        assert_that(uri, equal_to(self._order.location))
 
     def test_update(self):
         location = "http://klarna.com/foo/bar/13"
@@ -118,7 +122,7 @@ class TestOrder(unittest.TestCase):
 
         self._connector.apply.assert_called_once_with(
             "POST", self._order, {"url": uri})
-        self.assertEqual(uri, self._order.location)
+        assert_that(uri, equal_to(self._order.location))
 
     def test_create_alternative_entry_point(self):
         data = {"foo": "boo"}
