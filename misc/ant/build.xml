@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="zoidberg" default="tests">
+<project name="klarnacheckout" default="tests">
     <property name="work.dir" location="${user.dir}" />
     <property name="python" value="python" />
     <property name="nosetests" value="nosetests" />
