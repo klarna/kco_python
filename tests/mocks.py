@@ -25,7 +25,7 @@ class HTTPHandler(HTTPHandler):
         self.responses.append({
             'status': status,
             'headers': self.Headers(headers) if headers else None,
-            'payload': payload
+            'payload': payload.encode('utf-8') if payload else None
         })
 
     def http_open(self, req):

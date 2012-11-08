@@ -146,6 +146,30 @@ class TestConnector(unittest.TestCase):
         assert_that(exc.code, equal_to(503))
         assert_that(self.resource.location, equal_to(redirect))
 
+    def test_apply_get_302_to_503(self):
+        origlocation = self.resource.location
+        payload = 'Forbidden'
+        redirect = 'http://test2/'
+        self.http.add_response(
+            status=503,
+            payload=payload)
+        self.http.add_response(
+            status=302,
+            headers={'location': redirect})
+
+        with self.assertRaises(HTTPError) as ei:
+            self.connector.apply(
+                'GET',
+                self.resource,
+                {
+                    'url': 'http://test'
+                })
+
+        exc = ei.exception
+        assert_that(exc.code, equal_to(503))
+        assert_that(self.resource.location, equal_to(origlocation))
+
+
     def test_apply_get_301_infinite_loop(self):
         self.http.add_response(
             status=301,
@@ -285,4 +309,24 @@ class TestConnector(unittest.TestCase):
             })
         req = res.req
         assert_that(self.resource.location, equal_to(redirect))
+        assert_that(req.get_full_url(), equal_to('http://test'))
+
+    def test_apply_post_doesnt_follow_redirect_302(self):
+        origlocation = self.resource.location
+        self.http.add_response(
+            status=503,
+            payload='Forbidden')
+        self.http.add_response(
+            status=302,
+            headers={'location':  'http://test2'}
+        )
+
+        res = self.connector.apply(
+            'POST',
+            self.resource,
+            {
+                'url': 'http://test'
+            })
+        req = res.req
+        assert_that(self.resource.location, equal_to(origlocation))
         assert_that(req.get_full_url(), equal_to('http://test'))
