@@ -22,7 +22,7 @@
     <property name="tests.dir" location="${work.dir}/tests" />
     <property name="archive.dir" location="${work.dir}/data/archive" />
     <property name="build.report.file" location="${tmp.dir}/report.properties" />
-    <property name="tests.juint" location="${tmp.dir}/junit.xml" />
+    <property name="tests.junit" location="${tmp.dir}/junit.xml" />
     <property name="checkstyle.file" location="${tmp.dir}/checkstyle.xml" />
     <property name="coverage.file" location="${tmp.dir}/coverage.xml" />
     <property name="coverage.dir" location="${tmp.dir}/coverage" />
@@ -131,4 +131,80 @@
         if="coverage" />
 
     <!-- TASKS !-->
+
+    <macrodef name="nosetests">
+        <attribute name="file" default="${tests.junit}" />
+        <attribute name="dir" default="${tests.dir}" />
+
+        <sequential>
+            <exec dir="${work.dir}" executable="${nosetests}">
+                <arg value="--with-xunit" />
+                <arg value="--xunit-file=@{file}" />
+                <arg value="@{dir}" />
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="nosecoverage">
+        <attribute name="file" default="${tests.junit}" />
+        <attribute name="dir" default="${tests.dir}" />
+
+        <sequential>
+            <exec dir="${work.dir}" executable="${nosetests}">
+                <arg value="--with-xunit" />
+                <arg value="--xunit-file=@{file}" />
+                <arg value="--with-coverage" />
+                <arg value="--cover-package=${pypackage}" />
+                <arg value="@{dir}" />
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="coverage-xml">
+        <attribute name="file" default="${coverage.file}" />
+        <element name="files" implicit="true"/>
+
+        <sequential>
+            <apply parallel="true" dir="${work.dir}" executable="coverage">
+                <arg value="xml" />
+                <arg value="-o" />
+                <arg value="@{file}" />
+                <files />
+            </apply>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="coverage-html">
+        <attribute name="dir" default="${coverage.dir}" />
+        <element name="files" implicit="true"/>
+
+        <sequential>
+            <apply parallel="true" dir="${work.dir}" executable="coverage">
+                <arg value="html" />
+                <arg value="-d" />
+                <arg value="@{dir}" />
+                <files />
+            </apply>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="pep8">
+        <attribute name="dir" default="${src.dir}" />
+
+        <sequential>
+            <exec dir="${work.dir}" executable="pep8">
+                <arg value="@{dir}" />
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="pyflakes">
+        <attribute name="dir" default="${src.dir}" />
+
+        <sequential>
+            <exec dir="${work.dir}" executable="pyflakes">
+                <arg value="@{dir}" />
+            </exec>
+        </sequential>
+    </macrodef>
 </project>
