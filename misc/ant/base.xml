@@ -138,6 +138,7 @@
 
         <sequential>
             <exec dir="${work.dir}" executable="${nosetests}">
+                <env key="PYTHONPATH" value="./libs" />
                 <arg value="--with-xunit" />
                 <arg value="--xunit-file=@{file}" />
                 <arg value="@{dir}" />
@@ -151,6 +152,7 @@
 
         <sequential>
             <exec dir="${work.dir}" executable="${nosetests}">
+                <env key="PYTHONPATH" value="./libs" />
                 <arg value="--with-xunit" />
                 <arg value="--xunit-file=@{file}" />
                 <arg value="--with-coverage" />
