@@ -1,5 +1,7 @@
 import unittest
 from klarnacheckout.useragent import UserAgent
+from hamcrest import assert_that, equal_to
+from tests.matchers import contains_regex, assert_raises
 
 
 class TestUserAgent(unittest.TestCase):
@@ -9,9 +11,9 @@ class TestUserAgent(unittest.TestCase):
 
     def test_basic(self):
         uastring = str(self._ua)
-        self.assertRegexpMatches(uastring, '.*OS\\/[^\\ ]+_[^\\ ]+.*')
-        self.assertRegexpMatches(uastring, '.*Library\\/[^\\ ]+_[^\\ ]+.*')
-        self.assertRegexpMatches(uastring, '.*Language\\/[^\\ ]+_[^\\ ]+.*')
+        assert_that(uastring, contains_regex('OS\\/[^\\ ]+_[^\\ ]+'))
+        assert_that(uastring, contains_regex('Library\\/[^\\ ]+_[^\\ ]+'))
+        assert_that(uastring, contains_regex('Language\\/[^\\ ]+_[^\\ ]+'))
 
     def test_another_field(self):
         fields = {
@@ -25,13 +27,13 @@ class TestUserAgent(unittest.TestCase):
 
         self._ua.add_field("Module", fields)
         uastring = str(self._ua)
-        self.assertRegexpMatches(
+        assert_that(
             uastring,
-            '.*Module\\/Magento_5.0 \\(LanguagePack\\/7 ; JsLib\\/2.0\\).*'
-        )
+            contains_regex(
+                'Module\\/Magento_5.0 \\(LanguagePack\\/7 ; JsLib\\/2.0\\)'))
 
     def test_cant_redefine(self):
-        with self.assertRaises(ValueError) as cm:
+        with assert_raises(ValueError) as cm:
             self._ua.add_field(
                 "OS",
                 {
@@ -41,16 +43,16 @@ class TestUserAgent(unittest.TestCase):
             )
 
         the_exception = cm.exception
-        self.assertEqual(str(the_exception), "Unable to redefine field OS")
+        assert_that(str(the_exception), equal_to("Unable to redefine field OS"))
 
     def test_invalid_parameter(self):
         field = 13
         data = 13
-        with self.assertRaises(Exception):
+        with assert_raises(Exception):
             self._ua.add_field(field, data)
 
         field = 13
         data = ""
-        with self.assertRaises(Exception):
+        with assert_raises(Exception):
             self._ua.add_field(field, data)
             str(self._ua)

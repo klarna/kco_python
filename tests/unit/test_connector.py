@@ -4,7 +4,7 @@ from klarnacheckout.connector import Connector
 from functools import partial
 from hamcrest import assert_that, equal_to, greater_than
 import tests.mocks
-from tests.matchers import called_once_with
+from tests.matchers import called_once_with, assert_raises
 
 try:
     from urllib.request import build_opener, Request
@@ -60,7 +60,7 @@ class TestConnector(unittest.TestCase):
     def test_error_code(self):
         self.http.add_response(status=400)
 
-        with self.assertRaises(HTTPError):
+        with assert_raises(HTTPError):
             self.connector.apply(
                 'GET',
                 self.resource,
@@ -95,7 +95,7 @@ class TestConnector(unittest.TestCase):
         payload = '{"flobadob"}'
         self.http.add_response(payload=payload)
 
-        with self.assertRaises(ValueError):
+        with assert_raises(ValueError):
             self.connector.apply(
                 'GET',
                 self.resource,
@@ -134,7 +134,7 @@ class TestConnector(unittest.TestCase):
             status=301,
             headers={'location': redirect})
 
-        with self.assertRaises(HTTPError) as ei:
+        with assert_raises(HTTPError) as ei:
             self.connector.apply(
                 'GET',
                 self.resource,
@@ -157,7 +157,7 @@ class TestConnector(unittest.TestCase):
             status=302,
             headers={'location': redirect})
 
-        with self.assertRaises(HTTPError) as ei:
+        with assert_raises(HTTPError) as ei:
             self.connector.apply(
                 'GET',
                 self.resource,
@@ -175,7 +175,7 @@ class TestConnector(unittest.TestCase):
             status=301,
             headers={'location': 'http://test'})
 
-        with self.assertRaises(HTTPError) as ei:
+        with assert_raises(HTTPError) as ei:
             self.connector.apply(
                 'GET',
                 self.resource,
@@ -219,7 +219,7 @@ class TestConnector(unittest.TestCase):
         self.http.add_response(
             payload=payload)
 
-        with self.assertRaises(ValueError):
+        with assert_raises(ValueError):
             self.connector.apply(
                 'POST',
                 self.resource)
@@ -270,7 +270,7 @@ class TestConnector(unittest.TestCase):
             headers={'location': redirect}
         )
 
-        with self.assertRaises(HTTPError):
+        with assert_raises(HTTPError):
             self.connector.apply(
                 'POST',
                 self.resource)
