@@ -1,0 +1,210 @@
+<?xml version="1.0"?>
+<project name="base" default="die">
+    <property name="properties" location="build.properties" />
+    <property name="version.file" location="version.properties" />
+    <property file="${properties}" />
+    <property file="${version.file}" />
+
+    <!-- defaults !-->
+    <property name="product" value="${ant.project.name}" />
+    <property name="build.version.major" value="0" />
+    <property name="build.version.minor" value="0" />
+    <property name="build.version.bug" value="0" />
+    <property name="date.format" value="yyyy-mm-dd" />
+
+    <property name="work.dir" location="${basedir}" />
+    <property name="src.dir" location="${work.dir}" />
+    <property name="tmp.dir" location="${work.dir}/data/tmp" />
+    <property name="build.dir" location="${tmp.dir}/build" />
+    <property name="root.dir" location="/tmp/${product}" />
+    <property name="install.dir" location="${root.dir}" />
+    <property name="docs.dir" location="${work.dir}/docs" />
+    <property name="tests.dir" location="${work.dir}/tests" />
+    <property name="archive.dir" location="${work.dir}/data/archive" />
+    <property name="build.report.file" location="${tmp.dir}/report.properties" />
+    <property name="tests.junit" location="${tmp.dir}/junit.xml" />
+    <property name="checkstyle.file" location="${tmp.dir}/checkstyle.xml" />
+    <property name="coverage.file" location="${tmp.dir}/coverage.xml" />
+    <property name="coverage.dir" location="${tmp.dir}/coverage" />
+
+    <property name="git" value="git" />
+
+    <!-- export a few properties about the system and the build !-->
+    <property environment="env" />
+    <property
+        name="build.version"
+        value="${build.version.major}.${build.version.minor}.${build.version.bug}" />
+    <property
+        name="zip.file"
+        value="${archive.dir}/klarna_${product}_${build.version}.zip" />
+    <tstamp>
+        <format property="build.date" pattern="${date.format}" />
+    </tstamp>
+    <exec executable="hostname" outputproperty="sys.host" />
+    <exec executable="uname" outputproperty="sys.name">
+        <arg value="-o" />
+    </exec>
+
+    <!-- acts as the default target to avoid building base build !-->
+    <target name="die" description="Abort the build">
+        <fail>build aborted</fail>
+    </target>
+
+    <target name="-init" description="Setup build environment">
+        <mkdir dir="${tmp.dir}" />
+        <mkdir dir="${archive.dir}" />
+    </target>
+
+    <target name="-enable-coverage">
+        <property name="coverage" value="true" />
+    </target>
+
+    <target name="coverage" depends="-enable-coverage, unittest" />
+    <target name="tests" depends="-init, check, unittest" />
+    <target name="unittest" depends="-init, -pre-unittest, -unittest-nocov, -unittest-cov"/>
+
+    <target name="archive" depends="-pre-archive">
+        <exec dir="${work.dir}" executable="${git}">
+            <arg value="archive" />
+            <arg value="HEAD" />
+            <arg value="--prefix=klarna_${product}_${build.version}/" />
+            <arg value="-o" />
+            <arg value="${zip.file}" />
+        </exec>
+    </target>
+
+    <target name="dist-extra" depends="archive, create-doc">
+        <zip destfile="${zip.file}" update="true">
+            <zipfileset
+                dir="${docs.dir}"
+                prefix="klarna_${product}_${build.version}/docs/" />
+        </zip>
+    </target>
+
+    <target name="dist"
+        description="Create a distributable package"
+        depends="-init, tests, archive, fetch-resources, dist-extra"
+    />
+
+    <target name="-install">
+        <copy todir="${install.dir}">
+            <fileset dir="${src.dir}">
+                <patternset refid="source" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="install-extra" unless="recursive">
+        <antcall target="-install-extra" />
+    </target>
+
+    <target name="install" description="Copy files to run-time folder"
+        depends="-install, install-extra"
+    />
+
+    <!-- STUBS !-->
+    <target
+        name="-pre-unittest"
+        description="hook to run tasks before unittests" />
+    <target
+        name="-pre-archive"
+        description="hook to run tasks before archiving" />
+    <target
+        name="-install-extra"
+        description="Install extra files such as demo files" />
+    <target
+        name="check"
+        description="Run static checks on the source" />
+    <target
+        name="create-doc"
+        description="Generate documentation" />
+    <target
+        name="fetch-resources"
+        description="Fetch required remote resources" />
+    <target
+        name="-unittest-nocov"
+        description="plain run of unittests"
+        unless="coverage" />
+    <target
+        name="-unittest-cov"
+        description="run unittest and output coverage data"
+        if="coverage" />
+
+    <!-- TASKS !-->
+
+    <macrodef name="nosetests">
+        <attribute name="file" default="${tests.junit}" />
+        <attribute name="dir" default="${tests.dir}" />
+
+        <sequential>
+            <exec dir="${work.dir}" executable="${nosetests}">
+                <arg value="--with-xunit" />
+                <arg value="--xunit-file=@{file}" />
+                <arg value="@{dir}" />
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="nosecoverage">
+        <attribute name="file" default="${tests.junit}" />
+        <attribute name="dir" default="${tests.dir}" />
+
+        <sequential>
+            <exec dir="${work.dir}" executable="${nosetests}">
+                <arg value="--with-xunit" />
+                <arg value="--xunit-file=@{file}" />
+                <arg value="--with-coverage" />
+                <arg value="--cover-package=${pypackage}" />
+                <arg value="@{dir}" />
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="coverage-xml">
+        <attribute name="file" default="${coverage.file}" />
+        <element name="files" implicit="true"/>
+
+        <sequential>
+            <apply parallel="true" dir="${work.dir}" executable="coverage">
+                <arg value="xml" />
+                <arg value="-o" />
+                <arg value="@{file}" />
+                <files />
+            </apply>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="coverage-html">
+        <attribute name="dir" default="${coverage.dir}" />
+        <element name="files" implicit="true"/>
+
+        <sequential>
+            <apply parallel="true" dir="${work.dir}" executable="coverage">
+                <arg value="html" />
+                <arg value="-d" />
+                <arg value="@{dir}" />
+                <files />
+            </apply>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="pep8">
+        <attribute name="dir" default="${src.dir}" />
+
+        <sequential>
+            <exec dir="${work.dir}" executable="pep8">
+                <arg value="@{dir}" />
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="pyflakes">
+        <attribute name="dir" default="${src.dir}" />
+
+        <sequential>
+            <exec dir="${work.dir}" executable="pyflakes">
+                <arg value="@{dir}" />
+            </exec>
+        </sequential>
+    </macrodef>
+</project>

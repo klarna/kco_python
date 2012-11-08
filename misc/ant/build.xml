@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<project name="zoidberg" default="tests">
+    <property name="work.dir" location="${user.dir}" />
+    <property name="python" value="python" />
+    <property name="nosetests" value="nosetests" />
+    <property name="pypackage" value="${ant.project.name}" />
+    <property name="src.dir" location="${user.dir}/${pypackage}" />
+    <property name="build.base" location="base.xml"/>
+
+    <import file="${build.base}" />
+
+    <patternset id="source">
+        <include name="**/*.py" />
+        <exclude name="${tests.dir}" />
+        <exclude name="${tmp.dir}" />
+    </patternset>
+
+    <target name="dist-extra">
+        <!-- noop !-->
+    </target>
+
+    <target name="archive">
+        <exec dir="${work.dir}" executable="${python}">
+            <arg value="setup.py" />
+            <arg value="sdist" />
+        </exec>
+    </target>
+
+    <target
+        name="-unittest-nocov"
+        description="plain run of unittests"
+        unless="coverage"
+    >
+        <nosetests />
+    </target>
+
+    <target
+        name="-unittest-cov"
+        description="run unittest and output coverage data"
+        if="coverage"
+    >
+        <nosecoverage />
+
+        <coverage-xml>
+            <fileset dir="${src.dir}">
+                <patternset refid="source" />
+            </fileset>
+        </coverage-xml>
+
+        <coverage-html>
+            <fileset dir="${src.dir}">
+                <patternset refid="source" />
+            </fileset>
+        </coverage-html>
+    </target>
+
+    <target
+        name="check"
+        description="Run static checks on the source"
+        depends="-init"
+    >
+        <parallel>
+            <pep8 />
+            <pyflakes />
+        </parallel>
+    </target>
+</project>
