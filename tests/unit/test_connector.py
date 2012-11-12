@@ -107,11 +107,11 @@ class TestConnector(unittest.TestCase):
         payload = '{"flobadob":["bobcat","wookie"]}'
         redirect = 'http://test2/'
         self.http.add_response(
-            status=200,
-            payload=payload)
-        self.http.add_response(
             status=301,
             headers={'location': redirect})
+        self.http.add_response(
+            status=200,
+            payload=payload)
 
         res = self.connector.apply(
             'GET',
@@ -128,11 +128,11 @@ class TestConnector(unittest.TestCase):
         payload = 'Forbidden'
         redirect = 'http://test2/'
         self.http.add_response(
-            status=503,
-            payload=payload)
-        self.http.add_response(
             status=301,
             headers={'location': redirect})
+        self.http.add_response(
+            status=503,
+            payload=payload)
 
         with assert_raises(HTTPError) as ei:
             self.connector.apply(
@@ -151,11 +151,11 @@ class TestConnector(unittest.TestCase):
         payload = 'Forbidden'
         redirect = 'http://test2/'
         self.http.add_response(
-            status=503,
-            payload=payload)
-        self.http.add_response(
             status=302,
             headers={'location': redirect})
+        self.http.add_response(
+            status=503,
+            payload=payload)
 
         with assert_raises(HTTPError) as ei:
             self.connector.apply(
@@ -169,8 +169,10 @@ class TestConnector(unittest.TestCase):
         assert_that(exc.code, equal_to(503))
         assert_that(self.resource.location, equal_to(origlocation))
 
-
     def test_apply_get_301_infinite_loop(self):
+        self.http.add_response(
+            status=301,
+            headers={'location': 'http://test'})
         self.http.add_response(
             status=301,
             headers={'location': 'http://test'})
@@ -244,11 +246,11 @@ class TestConnector(unittest.TestCase):
         payload = '{"flobadob":["bobcat","wookie"]}'
         redirect = 'http://test2'
         self.http.add_response(
-            status=200,
-            payload=payload)
-        self.http.add_response(
             status=303,
             headers={'location': redirect})
+        self.http.add_response(
+            status=200,
+            payload=payload)
 
         res = self.connector.apply(
             'POST',
@@ -263,12 +265,12 @@ class TestConnector(unittest.TestCase):
     def test_apply_post_303_to_503(self):
         redirect = 'http://test2'
         self.http.add_response(
-            status=503,
-            payload='Forbidden')
-        self.http.add_response(
             status=303,
             headers={'location': redirect}
         )
+        self.http.add_response(
+            status=503,
+            payload='Forbidden')
 
         with assert_raises(HTTPError):
             self.connector.apply(
@@ -294,12 +296,12 @@ class TestConnector(unittest.TestCase):
     def test_apply_post_doesnt_follow_redirect_301(self):
         redirect = 'http://test2'
         self.http.add_response(
-            status=503,
-            payload='Forbidden')
-        self.http.add_response(
             status=301,
             headers={'location': redirect}
         )
+        self.http.add_response(
+            status=503,
+            payload='Forbidden')
 
         res = self.connector.apply(
             'POST',
@@ -314,12 +316,12 @@ class TestConnector(unittest.TestCase):
     def test_apply_post_doesnt_follow_redirect_302(self):
         origlocation = self.resource.location
         self.http.add_response(
-            status=503,
-            payload='Forbidden')
-        self.http.add_response(
             status=302,
             headers={'location':  'http://test2'}
         )
+        self.http.add_response(
+            status=503,
+            payload='Forbidden')
 
         res = self.connector.apply(
             'POST',

@@ -33,20 +33,19 @@ class HTTPHandler(HTTPHandler):
         })
 
     def http_open(self, req):
-        responses = self.responses
-        info = responses.pop() if len(responses) > 1 else responses[-1]
+        info, self.responses = (self.responses[0], self.responses[1:])
         url = req.get_full_url()
 
         if info['uri'] and info['uri'] != url:
             raise Exception("Unexpected url: %s" % url, 999)
 
         if req.data:
-            data = json.loads(req.data)
+            data = json.loads(req.data.decode('utf-8'))
             if 'test' in data:
                 data['test'] = data['test'].upper()
             self.data = data
 
-        payload = info['payload'] or json.dumps(self.data)
+        payload = info['payload'] or json.dumps(self.data).encode('utf-8')
         status = info['status']
         headers = info['headers']
 

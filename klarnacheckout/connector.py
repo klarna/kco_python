@@ -54,7 +54,7 @@ class Connector(object):
         data = response.read()
         headers = response.info()
 
-        if data:
+        if response.code == 200 and data:
             resource.parse(json.loads(data.decode('utf-8')))
 
         if response.code == 201 and 'location' in headers:
