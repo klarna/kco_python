@@ -30,17 +30,21 @@ request = {}
 # Shared Secret
 shared_secret = 'shared_secret'
 
+klarnacheckout.Order.content_type =\
+    'application/vnd.klarna.checkout.aggregated-order-v2+json'
+
 connector = klarnacheckout.create_connector(shared_secret)
 
 checkout_id = request['checkout_uri']
-order = klarnacheckout.Order()
-order.fetch(connector, checkout_id)
+order = klarnacheckout.Order(connector, checkout_id)
+order.fetch()
 
 if order['status'] == 'checkout_complete':
     # At this point make sure the order is created in your system and send a
     # confirmation email to the customer
-    order['status'] = 'created'
-    order['merchant_reference'] = {
+    update_data = {}
+    update_data['status'] = 'created'
+    update_data['merchant_reference'] = {
         'orderid1': uuid1()
     }
-    order.update(connector)
+    order.update(update_data)

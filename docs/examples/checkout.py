@@ -23,22 +23,27 @@ import klarnacheckout
 session = {}
 
 # Dictionary containing the cart items
-cart = ({'quantity': 1,
-         'reference': 'BANAN01',
-         'name': 'Bananana',
-         'unit_price': 450,
-         'discount_rate': 0,
-         'tax_rate': 2500},
-        {'quantity': 1,
-         'type': 'shipping_fee',
-         'reference': 'SHIPPING',
-         'name': 'Shipping Fee',
-         'unit_price': 450,
-         'discount_rate': 0,
-         'tax_rate': 2500})
+cart = (
+    {
+        'quantity': 1,
+        'reference': 'BANAN01',
+        'name': 'Bananana',
+        'unit_price': 450,
+        'discount_rate': 0,
+        'tax_rate': 2500
+    }, {
+        'quantity': 1,
+        'type': 'shipping_fee',
+        'reference': 'SHIPPING',
+        'name': 'Shipping Fee',
+        'unit_price': 450,
+        'discount_rate': 0,
+        'tax_rate': 2500
+    }
+)
 
 # Merchant ID
-eid = 2
+eid = "2"
 
 # Shared Secret
 shared_secret = 'shared_secret'
@@ -54,16 +59,19 @@ order = None
 
 if 'klarna_checkout' in session:
     # Resume session
-    order = klarnacheckout.Order()
+    order = klarnacheckout.Order(connector, session["klarna_checkout"])
     try:
-        order.fetch(connector, session["klarna_checkout"])
+        order.fetch()
+
+        update_data = {}
+        update_data["cart"] = {}
 
         # Reset cart
-        order["cart"]["items"] = []
+        update_data["cart"]["items"] = []
         for item in cart:
-            order["cart"]["items"].append(item)
+            update_data["cart"]["items"].append(item)
 
-        order.update(connector)
+        order.update(update_data)
     except:
         # Reset session
         order = None
@@ -71,25 +79,29 @@ if 'klarna_checkout' in session:
 
 
 if order is None:
+    create_data = {}
+
     # Start new session
-    order = klarnacheckout.Order()
-    order['purchase_country'] = 'SE'
-    order['purchase_currency'] = 'SEK'
-    order['locale'] = 'sv-se'
-    order['merchant'] = {'id': eid,
-                         'terms_uri': 'http://localhost/terms.html',
-                         'checkout_uri': 'http://localhost/checkout',
-                         # You can not receive push notification on
-                         # non publicly available uri
-                         'confirmation_uri': 'http://localhost/confirmation',
-                         'push_uri': 'http://localhost/push'}
-    order["cart"] = {"items": []}
+    create_data['purchase_country'] = 'SE'
+    create_data['purchase_currency'] = 'SEK'
+    create_data['locale'] = 'sv-se'
+    create_data['merchant'] = {
+        'id': eid,
+        'terms_uri': 'http://localhost/terms.html',
+        'checkout_uri': 'http://localhost/checkout',
+        # You can not receive push notification on
+        # non publicly available uri
+        'confirmation_uri': 'http://localhost/confirmation',
+        'push_uri': 'http://localhost/push'
+    }
+    create_data["cart"] = {"items": []}
 
     for item in cart:
-        order["cart"]["items"].append(item)
+        create_data["cart"]["items"].append(item)
 
-    order.create(connector)
-    order.fetch(connector)
+    order = klarnacheckout.Order(connector)
+    order.create(create_data)
+    order.fetch()
 
 # Store location of checkout session
 session["klarna_checkout"] = order.location
