@@ -8,8 +8,8 @@ from tests.matchers import called_once_with, assert_raises
 class TestOrder(unittest.TestCase):
 
     def setUp(self):
-        self._order = Order()
         self._connector = Mock()
+        self._order = Order(self._connector)
 
     def test_contenttype(self):
         Order.content_type = "application/json"
@@ -38,12 +38,11 @@ class TestOrder(unittest.TestCase):
     def test_marshal_has_correct_keys(self):
         key1 = "testKey1"
         value1 = "testValue1"
-        self._order[key1] = value1
 
         key2 = "testKey2"
         value2 = "testValue2"
-        self._order[key2] = value2
-
+        self._order.parse({key1: value1,
+                           key2: value2})
         marshaldata = self._order.marshal()
 
         assert_that(key1, is_in(marshaldata))
@@ -57,20 +56,23 @@ class TestOrder(unittest.TestCase):
         assert_that(value2, marshaldata[key2])
 
     def test_set_get_values(self):
-        key = "testKey1"
-        self._order[key] = "testValue1"
+        key1 = "testKey1"
+        value1 = "testValue1"
 
-        value2 = "testKey2"
-        self._order[key] = value2
+        value2 = "testValue2"
 
-        assert_that(self._order[key], equal_to(value2))
+        self._order.parse({key1: value1})
+        assert_that(self._order[key1], equal_to(value1))
+
+        self._order.parse({key1: value2})
+        assert_that(self._order[key1], equal_to(value2))
 
     def test_set_invalid_key(self):
         key = {"1": "2"}
         value = "testValue"
 
         with assert_raises(TypeError):
-            self._order[key] = value
+            self._order.parse({key: value})
 
     def test_get_invalid_key(self):
         key = {"1": "2"}
@@ -87,49 +89,35 @@ class TestOrder(unittest.TestCase):
     def test_create(self):
         location = "http://stub"
         self._order.base_uri = location
-        self._order.create(self._connector)
+        data = {"foo": "boo"}
+        self._order.create(data)
 
         self._connector.apply.assert_called_once_with(
-            "POST", self._order, {"url": location})
+            "POST", self._order, {"url": location, "data": data})
 
     def test_fetch(self):
         location = "http://stub"
         self._order.location = location
-        self._order.fetch(self._connector, location)
+        self._order.fetch()
 
         self._connector.apply.assert_called_once_with(
             "GET", self._order, {"url": location})
 
-    def test_fetch_location(self):
-        uri = "http://klarna.com/foo/bar/16"
-        self._order.fetch(self._connector, uri)
-
-        self._connector.apply.assert_called_once_with(
-            "GET", self._order, {"url": uri})
-        assert_that(uri, equal_to(self._order.location))
-
     def test_update(self):
+        data = {"foo": "boo"}
         location = "http://klarna.com/foo/bar/13"
         self._order.location = location
-        self._order.update(self._connector)
+        self._order.update(data)
 
         self._connector.apply.assert_called_once_with(
-            "POST", self._order, {"url": location})
-
-    def test_update_location(self):
-        uri = "http://klarna.com/foo/bar/14"
-        self._order.update(self._connector, uri)
-
-        self._connector.apply.assert_called_once_with(
-            "POST", self._order, {"url": uri})
-        assert_that(uri, equal_to(self._order.location))
+            "POST", self._order, {"url": location, "data": data})
 
     def test_create_alternative_entry_point(self):
         data = {"foo": "boo"}
         uri = "http://klarna.com/foo/bar/15"
         Order.base_uri = uri
-        order = Order(data)
-        order.create(self._connector)
+        order = Order(self._connector)
+        order.create(data)
 
         self._connector.apply.assert_called_once_with(
-            "POST", order, {"url": uri})
+            "POST", order, {"url": uri, "data": data})

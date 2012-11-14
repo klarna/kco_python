@@ -26,11 +26,14 @@ session = {}
 # Shared Secret
 shared_secret = 'shared_secret'
 
+klarnacheckout.Order.content_type =\
+    'application/vnd.klarna.checkout.aggregated-order-v2+json'
+
 connector = klarnacheckout.create_connector(shared_secret)
 
 checkout_id = session['klarna_checkout']
-order = klarnacheckout.Order()
-order.fetch(connector, checkout_id)
+order = klarnacheckout.Order(connector, checkout_id)
+order.fetch()
 
 if order['status'] != 'checkout_complete':
     raise Exception('Checkout not completed, redirect to checkout.py')

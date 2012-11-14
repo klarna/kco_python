@@ -24,28 +24,31 @@ class Order(object):
     # Content Type to use
     content_type = None
 
-    def __init__(self, data=None):
+    # Connector
+    connector = None
+
+    def __init__(self, connector, uri=None):
         '''Create a new Order object
 
-        `data` Initial data
+        `connector` connector to use
+        `uri` uri of resource
         '''
-
+        self.connector = connector
         self._location = None
-        self._data = {} if data is None else dict(data)
+        self._data = {}
+        if uri:
+            self._location = uri
 
     def __getitem__(self, key):
         '''Getter mapping'''
-
         return self._data[key]
 
     def __setitem__(self, key, value):
         '''Setter mapping'''
-
         self._data[key] = value
 
     def keys(self):
         '''Key '''
-
         return self._data.keys()
 
     @property
@@ -66,48 +69,34 @@ class Order(object):
 
         `data` data
         '''
-
         self._data = dict(data)
 
     def marshal(self):
         '''Basic representation of the object'''
-
         return dict(self._data)
 
-    def create(self, connector):
+    def create(self, data):
         '''Create a new order
 
-        `connector` An instance of connector class
+        `data` Data to initialise order resource with
         '''
+        options = {"url": self.base_uri,
+                   "data": data}
+        self.connector.apply("POST", self, options)
 
-        options = {"url": self.base_uri}
-        connector.apply("POST", self, options)
-
-    def fetch(self, connector, location=None):
-        '''Fetch order data
-
-        `connector` An instance of connector class
-        `location` optional uri
-        '''
-
-        if location:
-            self.location = location
+    def fetch(self):
+        '''Fetch order data'''
         options = {"url": self._location}
+        self.connector.apply("GET", self, options)
 
-        connector.apply("GET", self, options)
-
-    def update(self, connector, location=None):
+    def update(self, data):
         '''Update order data
 
-        `connector` An instance of connector class
-        `location` optional uri
+        `data` data to update order resource with
         '''
-
-        if location:
-            self.location = location
-        options = {"url": self._location}
-
-        connector.apply("POST", self, options)
+        options = {"url": self._location,
+                   "data": data}
+        self.connector.apply("POST", self, options)
 
     def __repr__(self):
-        return '<Order %r>' % (self.location,)
+        return '<Order %r>' % (self._location,)
