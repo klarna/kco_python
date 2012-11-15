@@ -72,7 +72,6 @@ class Connector(object):
         '''
 
         options = options or {}
-        marshal = resource.marshal
         content_type = resource.content_type
         resource.parse
 
@@ -82,7 +81,8 @@ class Connector(object):
 
         if method == 'POST':
             req.add_header('Content-Type', content_type)
-            req.data = json.dumps(marshal()).encode('utf-8')
+            data = options.get('data') or resource.marshal()
+            req.data = json.dumps(data).encode('utf-8')
 
         return self.handle_response(resource, self.opener.open(req))
 

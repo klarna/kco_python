@@ -1,7 +1,8 @@
 import unittest
 from klarnacheckout.order import Order
 from mock import Mock
-from hamcrest import assert_that, equal_to, greater_than, instance_of, is_in
+from hamcrest import ( assert_that, equal_to, greater_than, instance_of,
+    is_in, contains)
 from tests.matchers import called_once_with, assert_raises
 
 
@@ -66,6 +67,7 @@ class TestOrder(unittest.TestCase):
 
         self._order.parse({key1: value2})
         assert_that(self._order[key1], equal_to(value2))
+        assert_that(self._order, contains(key1))
 
     def test_set_invalid_key(self):
         key = {"1": "2"}

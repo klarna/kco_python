@@ -51,6 +51,10 @@ class Order(object):
         '''Key '''
         return self._data.keys()
 
+    def __iter__(self):
+        '''Iter'''
+        return self._data.__iter__()
+
     @property
     def location(self):
         '''URI of remote resource'''
