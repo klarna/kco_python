@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<project name="klarnacheckout" default="tests">
+<project name="kco_python" default="tests">
     <property name="work.dir" location="${user.dir}" />
     <property name="python" value="python" />
     <property name="nosetests" value="nosetests" />
-    <property name="pypackage" value="${ant.project.name}" />
+    <property name="pypackage" value="klarnacheckout" />
     <property name="src.dir" location="${user.dir}/${pypackage}" />
     <property name="build.base" location="base.xml"/>
 
@@ -17,13 +17,6 @@
 
     <target name="dist-extra">
         <!-- noop !-->
-    </target>
-
-    <target name="archive">
-        <exec dir="${work.dir}" executable="${python}">
-            <arg value="setup.py" />
-            <arg value="sdist" />
-        </exec>
     </target>
 
     <target
