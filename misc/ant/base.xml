@@ -7,7 +7,7 @@
 
     <!-- defaults !-->
     <property name="product" value="${ant.project.name}" />
-    <property name="build.version.major" value="0" />
+    <property name="build.version.major" value="1" />
     <property name="build.version.minor" value="0" />
     <property name="build.version.bug" value="0" />
     <property name="date.format" value="yyyy-mm-dd" />

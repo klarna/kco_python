@@ -4,7 +4,7 @@ This file demonstrates the use of the Klarna library to complete
 the purchase and display the confirmation page snippet.
 '''
 
-# Copyright 2012 Klarna AB
+# Copyright 2013 Klarna AB
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ the purchase and display the confirmation page snippet.
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+# [[examples-confirmation]]
 import klarnacheckout
 
 # Instance of the session library that is being used in the server
@@ -40,3 +40,4 @@ if order['status'] != 'checkout_complete':
 
 print "<div>%s</div>" % (order["gui"]["snippet"])
 del session['klarna_checkout']
+# [[examples-confirmation]]

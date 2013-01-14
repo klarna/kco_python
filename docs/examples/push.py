@@ -4,7 +4,7 @@ This file demonstrates the use of the Klarna library to complete
 the purchase and create the order.
 '''
 
-# Copyright 2012 Klarna AB
+# Copyright 2013 Klarna AB
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ the purchase and create the order.
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+# [[examples-push]]
 import klarnacheckout
 from uuid import uuid1
 
@@ -48,3 +48,4 @@ if order['status'] == 'checkout_complete':
         'orderid1': uuid1()
     }
     order.update(update_data)
+# [[examples-push]]

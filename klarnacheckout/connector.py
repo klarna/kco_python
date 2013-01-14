@@ -3,7 +3,7 @@
 Defines a class by which facilitates performing HTTP actions on resources.
 '''
 
-# Copyright 2012 Klarna AB
+# Copyright 2013 Klarna AB
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
