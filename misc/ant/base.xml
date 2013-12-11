@@ -27,8 +27,6 @@
     <property name="coverage.file" location="${tmp.dir}/coverage.xml" />
     <property name="coverage.dir" location="${tmp.dir}/coverage" />
 
-    <property name="git" value="git" />
-
     <!-- export a few properties about the system and the build !-->
     <property environment="env" />
     <property
@@ -64,7 +62,7 @@
     <target name="unittest" depends="-init, -pre-unittest, -unittest-nocov, -unittest-cov"/>
 
     <target name="archive" depends="-pre-archive">
-        <exec dir="${work.dir}" executable="${git}">
+        <exec dir="${work.dir}" executable="${bin.git}">
             <arg value="archive" />
             <arg value="HEAD" />
             <arg value="--prefix=klarna_${product}_${build.version}/" />
@@ -137,7 +135,7 @@
         <attribute name="dir" default="${tests.dir}" />
 
         <sequential>
-            <exec dir="${work.dir}" executable="${nosetests}">
+            <exec dir="${work.dir}" executable="${bin.nosetests}">
                 <env key="PYTHONPATH" value="./libs" />
                 <arg value="--with-xunit" />
                 <arg value="--xunit-file=@{file}" />
@@ -151,7 +149,7 @@
         <attribute name="dir" default="${tests.dir}" />
 
         <sequential>
-            <exec dir="${work.dir}" executable="${nosetests}">
+            <exec dir="${work.dir}" executable="${bin.nosetests}">
                 <env key="PYTHONPATH" value="./libs" />
                 <arg value="--with-xunit" />
                 <arg value="--xunit-file=@{file}" />
@@ -167,7 +165,7 @@
         <element name="files" implicit="true"/>
 
         <sequential>
-            <apply parallel="true" dir="${work.dir}" executable="coverage">
+            <apply parallel="true" dir="${work.dir}" executable="${bin.coverage}">
                 <arg value="xml" />
                 <arg value="-o" />
                 <arg value="@{file}" />
@@ -181,7 +179,7 @@
         <element name="files" implicit="true"/>
 
         <sequential>
-            <apply parallel="true" dir="${work.dir}" executable="coverage">
+            <apply parallel="true" dir="${work.dir}" executable="${bin.coverage}">
                 <arg value="html" />
                 <arg value="-d" />
                 <arg value="@{dir}" />
@@ -194,7 +192,7 @@
         <attribute name="dir" default="${src.dir}" />
 
         <sequential>
-            <exec dir="${work.dir}" executable="pep8">
+            <exec dir="${work.dir}" executable="${bin.pep8}">
                 <arg value="@{dir}" />
             </exec>
         </sequential>
@@ -204,7 +202,7 @@
         <attribute name="dir" default="${src.dir}" />
 
         <sequential>
-            <exec dir="${work.dir}" executable="pyflakes">
+            <exec dir="${work.dir}" executable="${bin.pyflakes}">
                 <arg value="@{dir}" />
             </exec>
         </sequential>

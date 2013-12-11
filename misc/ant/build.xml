@@ -1,11 +1,17 @@
 <?xml version="1.0"?>
 <project name="kco_python" default="tests">
     <property name="work.dir" location="${user.dir}" />
-    <property name="python" value="python" />
-    <property name="nosetests" value="nosetests" />
     <property name="pypackage" value="klarnacheckout" />
     <property name="src.dir" location="${user.dir}/${pypackage}" />
     <property name="build.base" location="base.xml"/>
+
+    <!-- overridable binaries -->
+    <property name="bin.python" value="python" />
+    <property name="bin.nosetests" value="nosetests" />
+    <property name="bin.coverage" value="coverage" />
+    <property name="bin.pep8" value="pep8" />
+    <property name="bin.pyflakes" value="pyflakes" />
+    <property name="bin.git" value="git" />
 
     <import file="${build.base}" />
 
