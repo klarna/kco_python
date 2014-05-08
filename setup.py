@@ -9,5 +9,5 @@ setup(
     long_description=open('README.md').read(),
     author='Merchant Integration',
     author_email='support@klarna.com',
-    url='http://docs.klarna.com'
+    url='https://developers.klarna.com'
 )
