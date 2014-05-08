@@ -32,6 +32,12 @@ class UserAgent(object):
     def __init__(self):
         '''Initialise user-agent with default fields'''
 
+        pimp = ''
+        if hasattr(sys, "implementation"):
+            pimp = sys.implementation.name
+        else:
+            pimp = sys.subversion[0]
+
         # Components of the user-agent
         self._fields = {
             "Library": {
@@ -45,7 +51,7 @@ class UserAgent(object):
             "Language": {
                 "name": "Python",
                 "version": ".".join(map(str, sys.version_info[:3])),
-                "options": [sys.subversion[0]]
+                "options": [pimp]
             }
         }
 
