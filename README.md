@@ -1,4 +1,6 @@
 ## Klarna Checkout Python library
+[![Build Status](https://travis-ci.org/klarna/kco_python.svg?branch=master)](https://travis-ci.org/klarna/kco_python) [![Coverage Status](https://coveralls.io/repos/klarna/kco_python/badge.png?branch=master)](https://coveralls.io/r/klarna/kco_python?branch=master)
+
 Klarna Checkout is a revolutionary new payment solution that is changing the way
 people shop online. First, consumers verify their purchase with a minimal
 amount of information through intelligent identification, securing your order
