@@ -6,7 +6,7 @@ setup(
     packages=['klarnacheckout'],
     license='Apache 2',
     description='Klarna Checkout library',
-    long_description=open('README').read(),
+    long_description=open('README.md').read(),
     author='Merchant Integration',
     author_email='support@klarna.com',
     url='http://docs.klarna.com'
