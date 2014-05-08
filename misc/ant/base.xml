@@ -135,7 +135,7 @@
         <attribute name="dir" default="${tests.dir}" />
 
         <sequential>
-            <exec dir="${work.dir}" executable="${bin.nosetests}">
+            <exec dir="${work.dir}" executable="${bin.nosetests}" failonerror="true">
                 <env key="PYTHONPATH" value="./libs" />
                 <arg value="--with-xunit" />
                 <arg value="--xunit-file=@{file}" />
@@ -149,7 +149,7 @@
         <attribute name="dir" default="${tests.dir}" />
 
         <sequential>
-            <exec dir="${work.dir}" executable="${bin.nosetests}">
+            <exec dir="${work.dir}" executable="${bin.nosetests}" failonerror="true">
                 <env key="PYTHONPATH" value="./libs" />
                 <arg value="--with-xunit" />
                 <arg value="--xunit-file=@{file}" />
