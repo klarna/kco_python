@@ -1,0 +1,14 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+  - "3.3"
+
+install:
+  - pip install coveralls nose nose-cov coverage pep8 mock pyHamcrest pyflakes
+
+script:
+  - ant -f misc/ant/build.xml coverage check test-build
+
+after_success:
+  - coveralls

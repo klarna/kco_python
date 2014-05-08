@@ -2,6 +2,14 @@
 Klarna Checkout Python library
 ===========================
 
+v1.0.1
+----------------
+Date: 2014-05-08
+
+    Rickard D <support@klarna.com>
+        Update UserAgent to also work on Python 3.3
+
+
 v1.0.0
 ----------------
 Date: 2013-01-09

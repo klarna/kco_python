@@ -2,12 +2,12 @@ from setuptools import setup
 
 setup(
     name='KlarnaCheckout',
-    version='1.0.0',
+    version='1.0.1',
     packages=['klarnacheckout'],
     license='Apache 2',
     description='Klarna Checkout library',
-    long_description=open('README').read(),
+    long_description=open('README.md').read(),
     author='Merchant Integration',
     author_email='support@klarna.com',
-    url='http://docs.klarna.com'
+    url='https://developers.klarna.com'
 )

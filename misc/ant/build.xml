@@ -63,4 +63,11 @@
             <pyflakes />
         </parallel>
     </target>
+
+    <target name="test-build">
+        <exec dir="${work.dir}" executable="python" failonerror="true">
+            <arg value="setup.py" />
+            <arg value="build" />
+        </exec>
+    </target>
 </project>

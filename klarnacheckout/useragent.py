@@ -20,7 +20,7 @@ Additional fields can be added with the formatting taken care of.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 import sys
 import os
@@ -31,6 +31,12 @@ class UserAgent(object):
 
     def __init__(self):
         '''Initialise user-agent with default fields'''
+
+        pimp = ''
+        if hasattr(sys, "implementation"):
+            pimp = sys.implementation.name
+        else:
+            pimp = sys.subversion[0]
 
         # Components of the user-agent
         self._fields = {
@@ -45,7 +51,7 @@ class UserAgent(object):
             "Language": {
                 "name": "Python",
                 "version": ".".join(map(str, sys.version_info[:3])),
-                "options": [sys.subversion[0]]
+                "options": [pimp]
             }
         }
 
