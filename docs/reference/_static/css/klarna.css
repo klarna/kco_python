@@ -1,0 +1,19 @@
+.wy-side-nav-search,
+.wy-nav-top {
+    background-color: #0074c8;
+}
+
+.wy-nav-content-wrap {
+    background: none;
+}
+
+.wy-side-nav-search img {
+    width: auto;
+    height: auto;
+    background-color: transparent;
+    border-radius: 0;
+}
+
+.wy-nav-side {
+    background-color: #054269;
+}
