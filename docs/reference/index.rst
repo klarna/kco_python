@@ -10,6 +10,7 @@ Welcome to klarna checkout's documentation!
 
 .. autosummary::
    :toctree: _autosummary
+   :template: autosummary/module.rst
 
     klarnacheckout
     klarnacheckout.digest
