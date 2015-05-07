@@ -35,16 +35,3 @@ class contains_regex(BaseMatcher):
 
     def describe_to(self, desc):
         desc.append_text('string containing %r' % self.regex.pattern)
-
-
-class matches_regex(BaseMatcher):
-    def __init__(self, regex):
-        if not hasattr(regex, 'match'):
-            regex = re.compile(regex)
-        self.regex = regex
-
-    def _matches(self, item):
-        return self.regex.match(item) is not None
-
-    def describe_to(self, desc):
-        desc.append_text('string matching %r' % self.regex.pattern)
