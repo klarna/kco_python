@@ -1,7 +1,7 @@
 from klarnacheckout.recurring import RecurringOrder, RecurringStatus
 from mock import Mock
 from hamcrest import assert_that, equal_to
-from tests.matchers import called_once_with
+from matchmock import called_once_with
 
 
 def test_create_recurring_order():

@@ -2,7 +2,8 @@ import unittest
 from klarnacheckout.order import Order
 from mock import Mock
 from hamcrest import assert_that, equal_to, instance_of, is_in, contains
-from tests.matchers import called_once_with, assert_raises
+from tests.matchers import assert_raises
+from matchmock import called_once_with
 
 
 class TestOrder(unittest.TestCase):

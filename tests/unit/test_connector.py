@@ -4,7 +4,8 @@ from klarnacheckout.connector import Connector
 from functools import partial
 from hamcrest import assert_that, equal_to, greater_than
 import tests.mocks
-from tests.matchers import called_once_with, assert_raises
+from tests.matchers import assert_raises
+from matchmock import called_once_with
 
 try:
     from urllib.request import build_opener, Request

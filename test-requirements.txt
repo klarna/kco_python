@@ -6,3 +6,4 @@ pep8
 mock
 pyHamcrest
 pyflakes
+matchmock

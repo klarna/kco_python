@@ -43,7 +43,8 @@ class TestUserAgent(unittest.TestCase):
             )
 
         the_exception = cm.exception
-        assert_that(str(the_exception), equal_to("Unable to redefine field OS"))
+        assert_that(str(the_exception),
+                    equal_to("Unable to redefine field OS"))
 
     def test_invalid_parameter(self):
         field = 13
