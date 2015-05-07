@@ -15,21 +15,16 @@ This file demonstrates the use of the Klarna library to fetch an order.
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# [[examples-fetch]]
 import klarnacheckout
 
 # Shared Secret
 shared_secret = 'shared_secret'
 
-klarnacheckout.Order.content_type = \
-    'application/vnd.klarna.checkout.aggregated-order-v2+json'
+location = 'https://checkout.testdrive.klarna.com/checkout/orders/ABC123'
 
-resource_location = \
-    'https://checkout.testdrive.klarna.com/checkout/orders/ABC123'
+connector = klarnacheckout.create_connector(shared_secret,
+                                            klarnacheckout.BASE_TEST_URL)
 
-connector = klarnacheckout.create_connector(shared_secret)
-
-order = klarnacheckout.Order(connector, resource_location)
+order = klarnacheckout.Order(connector, location)
 
 order.fetch()
-# [[examples-fetch]]

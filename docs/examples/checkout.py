@@ -16,7 +16,6 @@ This file demonstrates the use of the Klarna library to display the checkout
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# [[examples-checkout]]
 import klarnacheckout
 
 # Instance of the session library that is being used in the server
@@ -47,12 +46,8 @@ eid = "0"
 # Shared Secret
 shared_secret = 'shared_secret'
 
-klarnacheckout.Order.base_uri = \
-    'https://checkout.testdrive.klarna.com/checkout/orders'
-klarnacheckout.Order.content_type = \
-    'application/vnd.klarna.checkout.aggregated-order-v2+json'
-
-connector = klarnacheckout.create_connector(shared_secret)
+connector = klarnacheckout.create_connector(shared_secret,
+                                            klarnacheckout.BASE_TEST_URL)
 
 order = None
 
@@ -109,4 +104,3 @@ session["klarna_checkout"] = order.location
 
 # Display checkout
 print "<div>%s</div>" % (order["gui"]["snippet"])
-# [[examples-checkout]]

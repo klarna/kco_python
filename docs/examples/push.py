@@ -17,7 +17,6 @@ the purchase and create the order.
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# [[examples-push]]
 import klarnacheckout
 from uuid import uuid1
 
@@ -30,10 +29,8 @@ request = {}
 # Shared Secret
 shared_secret = 'shared_secret'
 
-klarnacheckout.Order.content_type =\
-    'application/vnd.klarna.checkout.aggregated-order-v2+json'
-
-connector = klarnacheckout.create_connector(shared_secret)
+connector = klarnacheckout.create_connector(shared_secret,
+                                            klarnacheckout.BASE_TEST_URL)
 
 checkout_id = request['checkout_uri']
 order = klarnacheckout.Order(connector, checkout_id)
@@ -48,4 +45,3 @@ if order['status'] == 'checkout_complete':
         'orderid1': uuid1()
     }
     order.update(update_data)
-# [[examples-push]]
