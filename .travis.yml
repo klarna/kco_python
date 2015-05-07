@@ -5,7 +5,7 @@ python:
   - "3.3"
 
 install:
-  - pip install coveralls nose nose-cov coverage pep8 mock pyHamcrest pyflakes
+  - pip install -r test-requirements.txt
 
 script:
   - ant -f misc/ant/build.xml coverage check test-build
