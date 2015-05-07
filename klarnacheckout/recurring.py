@@ -1,4 +1,4 @@
-'''Checkout order resource'''
+'''Resources for dealing with recurring orders'''
 
 # Copyright 2013 Klarna AB
 #
@@ -17,34 +17,43 @@
 from .resource import Resource
 
 
-class Order(Resource):
-    '''Checkout order resource'''
+class RecurringOrder(Resource):
+    '''Recurring order resource'''
 
-    # Base URI that is used to create order resources
-    relative_uri = '/checkout/orders'
+    # Base URI that is used to create recurring order resources
+    relative_uri = '/checkout/recurring/%s/orders'
 
     # Content Type to use
-    content_type = 'application/vnd.klarna.checkout.aggregated-order-v2+json'
+    content_type = 'application/vnd.klarna.checkout.recurring-order-v1+json'
+
+    def __init__(self, connector, token):
+        uri = connector.base + self.relative_uri % token
+        super(RecurringOrder, self).__init__(connector, uri)
 
     def create(self, data):
         '''Create a new order
 
         `data` Data to initialise order resource with
         '''
-        options = {"url": self.connector.base + self.relative_uri,
+        options = {"url": self._location,
                    "data": data}
         self.connector.apply("POST", self, options)
+
+
+class RecurringStatus(Resource):
+    '''Recurring order status resource'''
+
+    # Base URI that is used to fetch recurring status
+    relative_uri = '/checkout/recurring/%s'
+
+    # Content Type to use
+    content_type = 'application/vnd.klarna.checkout.recurring-status-v1+json'
+
+    def __init__(self, connector, token):
+        uri = connector.base + self.relative_uri % token
+        super(RecurringStatus, self).__init__(connector, uri)
 
     def fetch(self):
         '''Fetch order data'''
         options = {"url": self._location}
         self.connector.apply("GET", self, options)
-
-    def update(self, data):
-        '''Update order data
-
-        `data` data to update order resource with
-        '''
-        options = {"url": self._location,
-                   "data": data}
-        self.connector.apply("POST", self, options)

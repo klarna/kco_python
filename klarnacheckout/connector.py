@@ -17,7 +17,7 @@ Defines a class by which facilitates performing HTTP actions on resources.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__all__ = ('Connector',)
+import json
 
 try:
     from urllib.request import (build_opener, Request, BaseHandler,
@@ -30,7 +30,8 @@ try:
 except ImportError:
     from urllib2 import (build_opener, Request, BaseHandler,
                          HTTPRedirectHandler)
-import json
+
+__all__ = ('Connector',)
 
 
 class Connector(object):
@@ -42,11 +43,11 @@ class Connector(object):
     e.g updates location on HTTP 201
     '''
 
-    def __init__(self, useragent, digester, build=build_opener):
-        self.opener = build(
-            RedirectHandler(),
-            AuthorizationHandler(digester),
-            UserAgentHandler(useragent))
+    def __init__(self, useragent, digester, base, build=build_opener):
+        self.base = base
+        self.opener = build(RedirectHandler(),
+                            AuthorizationHandler(digester),
+                            UserAgentHandler(useragent))
 
     def handle_response(self, resource, response):
         '''React upon the response returned'''

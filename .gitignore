@@ -1,5 +1,5 @@
 dist
-MANIFEST
+env
 coverage
 .coverage
-./**/*.pyc
+*.pyc

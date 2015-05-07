@@ -41,7 +41,8 @@ class TestConnector(unittest.TestCase):
         self.connector = Connector(
             self.useragent,
             self.digester,
-            partial(build_opener, self.http)
+            'http://test',
+            build=partial(build_opener, self.http)
         )
 
     def test_sets_useragent(self):
