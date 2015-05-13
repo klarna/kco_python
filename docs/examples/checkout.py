@@ -95,9 +95,13 @@ if order is None:
     for item in cart:
         create_data["cart"]["items"].append(item)
 
-    order = klarnacheckout.Order(connector)
-    order.create(create_data)
-    order.fetch()
+    try:
+        order = klarnacheckout.Order(connector)
+        order.create(create_data)
+        order.fetch()
+    except klarnacheckout.HTTPResponseException as e:
+        print(e.json.get('http_status_message'))
+        print(e.json.get('internal_message'))
 
 # Store location of checkout session
 session["klarna_checkout"] = order.location

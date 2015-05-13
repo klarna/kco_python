@@ -84,7 +84,7 @@ address = {
     'city': 'Ankeborg',
     'family_name': 'Approved',
     'given_name': 'Testperson-se',
-    'street_address': 'Stårgatan 1',
+    'street_address': 'Stargatan 1',
     'phone': '070 111 11 11'
 }
 
@@ -94,5 +94,9 @@ data['shipping_address'] = address
 for item in cart:
     data['cart']['items'].append(item)
 
-order = klarnacheckout.RecurringOrder(connector, token)
-order.create(data)
+try:
+    order = klarnacheckout.RecurringOrder(connector, token)
+    order.create(data)
+except klarnacheckout.HTTPResponseException as e:
+    print(e.json.get('http_status_message'))
+    print(e.json.get('internal_message'))

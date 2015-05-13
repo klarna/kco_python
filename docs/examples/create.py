@@ -70,5 +70,9 @@ data["cart"] = {"items": []}
 for item in cart:
     data["cart"]["items"].append(item)
 
-order = klarnacheckout.Order(connector)
-order.create(data)
+try:
+    order = klarnacheckout.Order(connector)
+    order.create(data)
+except klarnacheckout.HTTPResponseException as e:
+    print(e.json.get('http_status_message'))
+    print(e.json.get('internal_message'))

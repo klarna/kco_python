@@ -15,14 +15,14 @@
 # limitations under the License.
 
 from .useragent import UserAgent, __version__
-from .connector import Connector
+from .connector import Connector, HTTPResponseException
 from .order import Order
 from .recurring import RecurringStatus, RecurringOrder
 from .digest import create_digester
 
 __version__
 __all__ = ('create_connector', 'Connector', 'Order', 'RecurringStatus',
-           'RecurringOrder')
+           'RecurringOrder', 'HTTPResponseException')
 
 
 # API endpoints

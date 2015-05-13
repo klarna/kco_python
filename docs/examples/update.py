@@ -15,7 +15,6 @@ This file demonstrates the use of the Klarna library to update an order.
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# [[examples-update]]
 import klarnacheckout
 
 # Dictionary containing the cart items
@@ -62,5 +61,8 @@ data["cart"] = {"items": []}
 for item in cart:
     data["cart"]["items"].append(item)
 
-order.update(data)
-# [[examples-update]]
+try:
+    order.update(data)
+except klarnacheckout.HTTPResponseException as e:
+    print(e.json.get('http_status_message'))
+    print(e.json.get('internal_message'))

@@ -25,6 +25,9 @@ location = 'https://checkout.testdrive.klarna.com/checkout/orders/ABC123'
 connector = klarnacheckout.create_connector(shared_secret,
                                             klarnacheckout.BASE_TEST_URL)
 
-order = klarnacheckout.Order(connector, location)
-
-order.fetch()
+try:
+    order = klarnacheckout.Order(connector, location)
+    order.fetch()
+except klarnacheckout.HTTPResponseException as e:
+    print(e.json.get('http_status_message'))
+    print(e.json.get('internal_message'))

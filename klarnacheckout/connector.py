@@ -18,20 +18,22 @@ Defines a class by which facilitates performing HTTP actions on resources.
 # limitations under the License.
 
 import json
+from exceptions import IOError
 
 try:
     from urllib.request import (build_opener, Request, BaseHandler,
-                                HTTPRedirectHandler)
+                                HTTPRedirectHandler, HTTPError)
     # silence pyflakes
     build_opener
     Request
     BaseHandler
     HTTPRedirectHandler
+    HTTPError
 except ImportError:
     from urllib2 import (build_opener, Request, BaseHandler,
-                         HTTPRedirectHandler)
+                         HTTPRedirectHandler, HTTPError)
 
-__all__ = ('Connector',)
+__all__ = ('Connector', 'HTTPResponseException')
 
 
 class Connector(object):
@@ -73,19 +75,33 @@ class Connector(object):
         '''
 
         options = options or {}
-        content_type = resource.content_type
         resource.parse
 
         req = Request(options.get('url', None) or resource.location)
         req.resource = resource
-        req.add_header('Accept', content_type)
+        req.add_header('Accept', resource.accept)
 
         if method == 'POST':
-            req.add_header('Content-Type', content_type)
+            req.add_header('Content-Type', resource.content_type)
             data = options.get('data') or resource.marshal()
             req.data = json.dumps(data).encode('utf-8')
 
-        return self.handle_response(resource, self.opener.open(req))
+        try:
+            resp = self.opener.open(req)
+            return self.handle_response(resource, resp)
+        except HTTPError as e:
+            raise HTTPResponseException(e.getcode(), e.message, e.read())
+
+
+class HTTPResponseException(IOError):
+    def __init__(self, code, reason, payload):
+        self.code = code
+        self.reason = reason
+        self.payload = payload
+
+    @property
+    def json(self):
+        return json.loads(self.payload.decode('utf-8'))
 
 
 class AuthorizationHandler(BaseHandler):

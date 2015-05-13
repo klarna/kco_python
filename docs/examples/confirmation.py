@@ -29,8 +29,12 @@ connector = klarnacheckout.create_connector(shared_secret,
                                             klarnacheckout.BASE_TEST_URL)
 
 checkout_id = session['klarna_checkout']
-order = klarnacheckout.Order(connector, checkout_id)
-order.fetch()
+try:
+	order = klarnacheckout.Order(connector, checkout_id)
+	order.fetch()
+except klarnacheckout.HTTPResponseException as e:
+	print(e.json.get('http_status_message'))
+    print(e.json.get('internal_message'))
 
 if order['status'] != 'checkout_complete':
     raise Exception('Checkout not completed, redirect to checkout.py')

@@ -29,5 +29,9 @@ token = 'abc123'
 connector = klarnacheckout.create_connector(shared_secret,
                                             klarnacheckout.BASE_TEST_URL)
 
-order = klarnacheckout.RecurringStatus(connector, token)
-order.fetch()
+try:
+    order = klarnacheckout.RecurringStatus(connector, token)
+    order.fetch()
+except klarnacheckout.HTTPResponseException as e:
+    print(e.json.get('http_status_message'))
+    print(e.json.get('internal_message'))
