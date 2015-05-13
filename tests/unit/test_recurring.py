@@ -1,7 +1,6 @@
 from klarnacheckout.recurring import RecurringOrder, RecurringStatus
 from mock import Mock
 from hamcrest import assert_that, equal_to
-from matchmock import called_once_with
 
 
 def test_create_recurring_order():
@@ -27,5 +26,6 @@ def test_create_recurring_fetch():
     assert_that(order.location, equal_to(location))
 
     order.fetch()
-    assert_that(connector.apply,
-                called_once_with('GET', order, {'url': location}))
+    connector.apply.assert_called_once_with(
+        "GET", order, {"url": location})
+
