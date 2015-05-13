@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 '''Create recurring order example
 
 This file demonstrates the use of the Klarna library to create a recurring
@@ -84,7 +85,7 @@ address = {
     'city': 'Ankeborg',
     'family_name': 'Approved',
     'given_name': 'Testperson-se',
-    'street_address': 'Stargatan 1',
+    'street_address': 'Stårgatan 1',
     'phone': '070 111 11 11'
 }
 

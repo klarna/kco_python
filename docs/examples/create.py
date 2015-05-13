@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 '''Create example
 
 This file demonstrates the use of the Klarna library to create an order.

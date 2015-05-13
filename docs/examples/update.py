@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 '''Update example
 
 This file demonstrates the use of the Klarna library to update an order.

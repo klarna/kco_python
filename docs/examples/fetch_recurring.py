@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 '''Fetch recurring order example
 
 This file demonstrates the use of the Klarna library to fetch the status of a

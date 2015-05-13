@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 '''Fetch example
 
 This file demonstrates the use of the Klarna library to fetch an order.

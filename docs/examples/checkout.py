@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 '''Checkout example
 
 This file demonstrates the use of the Klarna library to display the checkout

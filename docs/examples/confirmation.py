@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 '''Confirmation Example
 
 This file demonstrates the use of the Klarna library to complete

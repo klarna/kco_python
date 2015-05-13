@@ -26,6 +26,9 @@ class RecurringOrder(Resource):
     # Content Type to use
     content_type = 'application/vnd.klarna.checkout.recurring-order-v1+json'
 
+    # Accept type to use
+    accept = 'application/vnd.klarna.checkout.recurring-order-accepted-v1+json'
+
     def __init__(self, connector, token):
         uri = connector.base + self.relative_uri % token
         super(RecurringOrder, self).__init__(connector, uri)
