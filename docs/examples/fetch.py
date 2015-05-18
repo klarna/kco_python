@@ -3,7 +3,7 @@
 
 This file demonstrates the use of the Klarna library to fetch an order.
 '''
-# Copyright 2013 Klarna AB
+# Copyright 2015 Klarna AB
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
