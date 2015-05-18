@@ -19,6 +19,7 @@ the purchase and create the order.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import klarnacheckout
+import sys
 from uuid import uuid1
 
 # Instance of the session library that is being used in the server
@@ -34,6 +35,7 @@ connector = klarnacheckout.create_connector(shared_secret,
                                             klarnacheckout.BASE_TEST_URL)
 
 checkout_id = request['checkout_uri']
+
 try:
     order = klarnacheckout.Order(connector, checkout_id)
     order.fetch()
@@ -41,6 +43,7 @@ except klarnacheckout.HTTPResponseException as e:
     print(e.json.get('http_status_message'))
     print(e.json.get('internal_message'))
 
+    sys.exit()
 
 if order['status'] == 'checkout_complete':
     # At this point make sure the order is created in your system and send a
@@ -48,6 +51,11 @@ if order['status'] == 'checkout_complete':
     update_data = {}
     update_data['status'] = 'created'
     update_data['merchant_reference'] = {
-        'orderid1': uuid1()
+        'orderid1': str(uuid1())
     }
-    order.update(update_data)
+
+    try:
+        order.update(update_data)
+    except klarnacheckout.HTTPResponseException as e:
+        print(e.json.get('http_status_message'))
+        print(e.json.get('internal_message'))

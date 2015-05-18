@@ -19,6 +19,7 @@ the purchase and display the confirmation page snippet.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import klarnacheckout
+import sys
 
 # Instance of the session library that is being used in the server
 session = {}
@@ -30,12 +31,14 @@ connector = klarnacheckout.create_connector(shared_secret,
                                             klarnacheckout.BASE_TEST_URL)
 
 checkout_id = session['klarna_checkout']
+
 try:
 	order = klarnacheckout.Order(connector, checkout_id)
 	order.fetch()
 except klarnacheckout.HTTPResponseException as e:
-	print(e.json.get('http_status_message'))
+    print(e.json.get('http_status_message'))
     print(e.json.get('internal_message'))
+    sys.exit()
 
 if order['status'] != 'checkout_complete':
     raise Exception('Checkout not completed, redirect to checkout.py')

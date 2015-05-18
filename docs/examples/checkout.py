@@ -18,6 +18,7 @@ This file demonstrates the use of the Klarna library to display the checkout
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import klarnacheckout
+import sys
 
 # Instance of the session library that is being used in the server
 session = {}
@@ -67,10 +68,14 @@ if 'klarna_checkout' in session:
             update_data["cart"]["items"].append(item)
 
         order.update(update_data)
-    except:
+    except klarnacheckout.HTTPResponseException as e:
         # Reset session
         order = None
         del session["klarna_checkout"]
+
+        print(e.json.get('http_status_message'))
+        print(e.json.get('internal_message'))
+        sys.exit();
 
 
 if order is None:
@@ -103,6 +108,7 @@ if order is None:
     except klarnacheckout.HTTPResponseException as e:
         print(e.json.get('http_status_message'))
         print(e.json.get('internal_message'))
+        sys.exit();
 
 # Store location of checkout session
 session["klarna_checkout"] = order.location
