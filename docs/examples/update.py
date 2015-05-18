@@ -18,6 +18,20 @@ This file demonstrates the use of the Klarna library to update an order.
 # limitations under the License.
 import klarnacheckout
 
+# Shared Secret
+shared_secret = 'shared_secret'
+
+connector = klarnacheckout.create_connector(shared_secret,
+                                            klarnacheckout.BASE_TEST_URL)
+
+checkout_uri = 'https://checkout.testdrive.klarna.com/checkout/orders/ABC123'
+
+order = klarnacheckout.Order(connector, checkout_uri)
+
+# Reset cart
+data = {'cart': []}
+data["cart"] = {"items": []}
+
 # Dictionary containing the cart items
 cart = (
     {
@@ -36,28 +50,6 @@ cart = (
         'tax_rate': 2500
     }
 )
-
-# Merchant ID
-eid = "0"
-
-# Shared Secret
-shared_secret = 'shared_secret'
-
-klarnacheckout.Order.content_type = \
-    'application/vnd.klarna.checkout.aggregated-order-v2+json'
-klarnacheckout.Order.base_uri = \
-    'https://checkout.testdrive.klarna.com/checkout/orders'
-
-connector = klarnacheckout.create_connector(shared_secret)
-
-resource_location = \
-    'https://checkout.testdrive.klarna.com/checkout/orders/ABC123'
-
-order = klarnacheckout.Order(connector, resource_location)
-
-# Reset cart
-data = {'cart': []}
-data["cart"] = {"items": []}
 
 for item in cart:
     data["cart"]["items"].append(item)

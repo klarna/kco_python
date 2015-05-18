@@ -33,6 +33,8 @@ connector = klarnacheckout.create_connector(shared_secret,
 try:
     order = klarnacheckout.RecurringStatus(connector, token)
     order.fetch()
+
+    print(order['payment_method']);
 except klarnacheckout.HTTPResponseException as e:
     print(e.json.get('http_status_message'))
     print(e.json.get('internal_message'))

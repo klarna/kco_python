@@ -23,6 +23,17 @@ import sys
 # Instance of the session library that is being used in the server
 session = {}
 
+# Merchant ID
+eid = "0"
+
+# Shared Secret
+shared_secret = 'shared_secret'
+
+connector = klarnacheckout.create_connector(shared_secret,
+                                            klarnacheckout.BASE_TEST_URL)
+
+order = None
+
 # Dictionary containing the cart items
 cart = (
     {
@@ -41,17 +52,6 @@ cart = (
         'tax_rate': 2500
     }
 )
-
-# Merchant ID
-eid = "0"
-
-# Shared Secret
-shared_secret = 'shared_secret'
-
-connector = klarnacheckout.create_connector(shared_secret,
-                                            klarnacheckout.BASE_TEST_URL)
-
-order = None
 
 if 'klarna_checkout' in session:
     # Resume session

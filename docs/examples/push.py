@@ -34,10 +34,10 @@ shared_secret = 'shared_secret'
 connector = klarnacheckout.create_connector(shared_secret,
                                             klarnacheckout.BASE_TEST_URL)
 
-checkout_id = request['checkout_uri']
+checkout_uri = request['klarna_order']
 
 try:
-    order = klarnacheckout.Order(connector, checkout_id)
+    order = klarnacheckout.Order(connector, checkout_uri)
     order.fetch()
 except klarnacheckout.HTTPResponseException as e:
     print(e.json.get('http_status_message'))

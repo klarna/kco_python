@@ -26,25 +26,6 @@ Note! First you must have created a regular aggregated order with the option
 
 import klarnacheckout
 
-# Dictionary containing the cart items
-cart = (
-    {
-        'quantity': 1,
-        'reference': '123456789',
-        'name': 'Klarna t-shirt',
-        'unit_price': 12300,
-        'discount_rate': 1000,
-        'tax_rate': 2500
-    }, {
-        'quantity': 1,
-        'type': 'shipping_fee',
-        'reference': 'SHIPPING',
-        'name': 'Shipping Fee',
-        'unit_price': 4900,
-        'tax_rate': 2500
-    }
-)
-
 # Merchant ID
 eid = "0"
 
@@ -69,12 +50,17 @@ merchant = {
                  '?sid=123&klarna_order={checkout.order.uri}')
 }
 
+# If the order should be activated automatically.
+# Set to true if you instead want a invoice created
+# otherwise you will get a reservation.
+activate = True
+
 data = {
     'purchase_country': 'SE',
     'purchase_currency': 'SEK',
     'locale': 'sv-se',
     'merchant': merchant,
-    'activate': True,
+    'activate': activate,
     'cart': {'items': []}
 }
 
@@ -92,12 +78,36 @@ address = {
 data['billing_address'] = address
 data['shipping_address'] = address
 
+# Dictionary containing the cart items
+cart = (
+    {
+        'quantity': 1,
+        'reference': '123456789',
+        'name': 'Klarna t-shirt',
+        'unit_price': 12300,
+        'discount_rate': 1000,
+        'tax_rate': 2500
+    }, {
+        'quantity': 1,
+        'type': 'shipping_fee',
+        'reference': 'SHIPPING',
+        'name': 'Shipping Fee',
+        'unit_price': 4900,
+        'tax_rate': 2500
+    }
+)
+
 for item in cart:
     data['cart']['items'].append(item)
 
 try:
     order = klarnacheckout.RecurringOrder(connector, token)
     order.create(data)
+
+    print(order['invoice'] if activate else order['reservation'])
 except klarnacheckout.HTTPResponseException as e:
-    print(e.json.get('http_status_message'))
-    print(e.json.get('internal_message'))
+    if e.code == 402:
+        print(e.json.get('reason'))
+    else:
+        print(e.json.get('http_status_message'))
+        print(e.json.get('internal_message'))

@@ -21,13 +21,13 @@ import klarnacheckout
 # Shared Secret
 shared_secret = 'shared_secret'
 
-location = 'https://checkout.testdrive.klarna.com/checkout/orders/ABC123'
+checkout_uri = 'https://checkout.testdrive.klarna.com/checkout/orders/ABC123'
 
 connector = klarnacheckout.create_connector(shared_secret,
                                             klarnacheckout.BASE_TEST_URL)
 
 try:
-    order = klarnacheckout.Order(connector, location)
+    order = klarnacheckout.Order(connector, checkout_uri)
     order.fetch()
 except klarnacheckout.HTTPResponseException as e:
     print(e.json.get('http_status_message'))
