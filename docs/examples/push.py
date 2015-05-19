@@ -1,10 +1,11 @@
+# -*- coding: UTF-8 -*-
 '''Push Example
 
 This file demonstrates the use of the Klarna library to complete
 the purchase and create the order.
 '''
 
-# Copyright 2013 Klarna AB
+# Copyright 2015 Klarna AB
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +18,8 @@ the purchase and create the order.
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# [[examples-push]]
 import klarnacheckout
+import sys
 from uuid import uuid1
 
 # Instance of the session library that is being used in the server
@@ -30,14 +31,19 @@ request = {}
 # Shared Secret
 shared_secret = 'shared_secret'
 
-klarnacheckout.Order.content_type =\
-    'application/vnd.klarna.checkout.aggregated-order-v2+json'
+connector = klarnacheckout.create_connector(shared_secret,
+                                            klarnacheckout.BASE_TEST_URL)
 
-connector = klarnacheckout.create_connector(shared_secret)
+checkout_uri = request['klarna_order']
 
-checkout_id = request['checkout_uri']
-order = klarnacheckout.Order(connector, checkout_id)
-order.fetch()
+try:
+    order = klarnacheckout.Order(connector, checkout_uri)
+    order.fetch()
+except klarnacheckout.HTTPResponseException as e:
+    print(e.json.get('http_status_message'))
+    print(e.json.get('internal_message'))
+
+    sys.exit()
 
 if order['status'] == 'checkout_complete':
     # At this point make sure the order is created in your system and send a
@@ -45,7 +51,11 @@ if order['status'] == 'checkout_complete':
     update_data = {}
     update_data['status'] = 'created'
     update_data['merchant_reference'] = {
-        'orderid1': uuid1()
+        'orderid1': str(uuid1())
     }
-    order.update(update_data)
-# [[examples-push]]
+
+    try:
+        order.update(update_data)
+    except klarnacheckout.HTTPResponseException as e:
+        print(e.json.get('http_status_message'))
+        print(e.json.get('internal_message'))

@@ -1,6 +1,6 @@
 '''Checkout API wrapper'''
 
-# Copyright 2013 Klarna AB
+# Copyright 2015 Klarna AB
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,16 +15,24 @@
 # limitations under the License.
 
 from .useragent import UserAgent, __version__
-from .connector import Connector
+from .connector import Connector, HTTPResponseException
 from .order import Order
+from .recurring import RecurringStatus, RecurringOrder
 from .digest import create_digester
 
-__all__ = ('create_connector', Connector, Order)
+__version__
+__all__ = ('create_connector', 'Connector', 'Order', 'RecurringStatus',
+           'RecurringOrder', 'HTTPResponseException')
 
 
-def create_connector(secret):
-    '''Create a new `Connector` with the default configiruation'''
+# API endpoints
+BASE_TEST_URL = 'https://checkout.testdrive.klarna.com'
+BASE_URL = 'https://checkout.klarna.com'
 
-    return Connector(
-        UserAgent(),
-        create_digester(secret))
+
+def create_connector(secret, base=BASE_URL):
+    '''Create a new `Connector` with the default configuration'''
+
+    return Connector(UserAgent(),
+                     create_digester(secret),
+                     base)

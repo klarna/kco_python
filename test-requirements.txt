@@ -1,0 +1,9 @@
+coveralls
+nose
+nose-cov
+coverage
+pep8
+mock
+pyHamcrest
+pyflakes
+matchmock

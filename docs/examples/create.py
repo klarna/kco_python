@@ -1,8 +1,9 @@
+# -*- coding: UTF-8 -*-
 '''Create example
 
 This file demonstrates the use of the Klarna library to create an order.
 '''
-# Copyright 2013 Klarna AB
+# Copyright 2015 Klarna AB
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +16,6 @@ This file demonstrates the use of the Klarna library to create an order.
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# [[examples-create]]
 import klarnacheckout
 
 # Dictionary containing the cart items
@@ -43,13 +43,8 @@ eid = "0"
 # Shared Secret
 shared_secret = 'shared_secret'
 
-
-klarnacheckout.Order.base_uri = \
-    'https://checkout.testdrive.klarna.com/checkout/orders'
-klarnacheckout.Order.content_type = \
-    'application/vnd.klarna.checkout.aggregated-order-v2+json'
-
-connector = klarnacheckout.create_connector(shared_secret)
+connector = klarnacheckout.create_connector(shared_secret,
+                                            klarnacheckout.BASE_TEST_URL)
 
 order = None
 
@@ -76,7 +71,9 @@ data["cart"] = {"items": []}
 for item in cart:
     data["cart"]["items"].append(item)
 
-order = klarnacheckout.Order(connector)
-order.create(data)
-
-# [[examples-create]]
+try:
+    order = klarnacheckout.Order(connector)
+    order.create(data)
+except klarnacheckout.HTTPResponseException as e:
+    print(e.json.get('http_status_message'))
+    print(e.json.get('internal_message'))

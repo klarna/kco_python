@@ -1,6 +1,6 @@
-'''Implementation of the order resource'''
+'''Checkout order resource'''
 
-# Copyright 2013 Klarna AB
+# Copyright 2015 Klarna AB
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,77 +14,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from .resource import Resource
 
-class Order(object):
-    '''Implementation of the order resource'''
+
+class Order(Resource):
+    '''Checkout order resource'''
 
     # Base URI that is used to create order resources
-    base_uri = None
+    relative_uri = '/checkout/orders'
 
     # Content Type to use
-    content_type = None
-
-    # Connector
-    connector = None
-
-    def __init__(self, connector, uri=None):
-        '''Create a new Order object
-
-        `connector` connector to use
-        `uri` uri of resource
-        '''
-        self.connector = connector
-        self._location = None
-        self._data = {}
-        if uri:
-            self._location = uri
-
-    def __getitem__(self, key):
-        '''Getter mapping'''
-        return self._data[key]
-
-    def __setitem__(self, key, value):
-        '''Setter mapping'''
-        self._data[key] = value
-
-    def keys(self):
-        '''Key '''
-        return self._data.keys()
-
-    def __iter__(self):
-        '''Iter'''
-        return self._data.__iter__()
-
-    @property
-    def location(self):
-        '''URI of remote resource'''
-        return self._location
-
-    @location.setter
-    def location(self, location):
-        self._location = str(location)
-
-    def get_content_type(self):
-        '''Return content type of the resource'''
-        return self.content_type
-
-    def parse(self, data):
-        '''Replace resource data
-
-        `data` data
-        '''
-        self._data = dict(data)
-
-    def marshal(self):
-        '''Basic representation of the object'''
-        return dict(self._data)
+    content_type = 'application/vnd.klarna.checkout.aggregated-order-v2+json'
 
     def create(self, data):
         '''Create a new order
 
         `data` Data to initialise order resource with
         '''
-        options = {"url": self.base_uri,
+        options = {"url": self.connector.base + self.relative_uri,
                    "data": data}
         self.connector.apply("POST", self, options)
 
@@ -101,6 +48,3 @@ class Order(object):
         options = {"url": self._location,
                    "data": data}
         self.connector.apply("POST", self, options)
-
-    def __repr__(self):
-        return '<Order %r>' % (self._location,)

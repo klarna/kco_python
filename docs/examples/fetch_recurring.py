@@ -1,8 +1,10 @@
 # -*- coding: UTF-8 -*-
-'''Fetch example
+'''Fetch recurring order example
 
-This file demonstrates the use of the Klarna library to fetch an order.
+This file demonstrates the use of the Klarna library to fetch the status of a
+recurring order.
 '''
+
 # Copyright 2015 Klarna AB
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,19 +18,23 @@ This file demonstrates the use of the Klarna library to fetch an order.
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import klarnacheckout
 
 # Shared Secret
 shared_secret = 'shared_secret'
 
-checkout_uri = 'https://checkout.testdrive.klarna.com/checkout/orders/ABC123'
+# Recurring order token
+token = 'abc123'
 
 connector = klarnacheckout.create_connector(shared_secret,
                                             klarnacheckout.BASE_TEST_URL)
 
 try:
-    order = klarnacheckout.Order(connector, checkout_uri)
+    order = klarnacheckout.RecurringStatus(connector, token)
     order.fetch()
+
+    print(order['payment_method']);
 except klarnacheckout.HTTPResponseException as e:
     print(e.json.get('http_status_message'))
     print(e.json.get('internal_message'))

@@ -1,10 +1,11 @@
 import unittest
 import mock
-from klarnacheckout.connector import Connector
+from klarnacheckout.connector import Connector, HTTPResponseException
 from functools import partial
 from hamcrest import assert_that, equal_to, greater_than
 import tests.mocks
-from tests.matchers import called_once_with, assert_raises
+from tests.matchers import assert_raises
+from matchmock import called_once_with
 
 try:
     from urllib.request import build_opener, Request
@@ -41,7 +42,8 @@ class TestConnector(unittest.TestCase):
         self.connector = Connector(
             self.useragent,
             self.digester,
-            partial(build_opener, self.http)
+            'http://test',
+            build=partial(build_opener, self.http)
         )
 
     def test_sets_useragent(self):
@@ -60,7 +62,7 @@ class TestConnector(unittest.TestCase):
     def test_error_code(self):
         self.http.add_response(status=400)
 
-        with assert_raises(HTTPError):
+        with assert_raises(HTTPResponseException):
             self.connector.apply(
                 'GET',
                 self.resource,
@@ -88,7 +90,7 @@ class TestConnector(unittest.TestCase):
             equal_to('Klarna ' + expected_digest))
         assert_that(
             req.get_header('Accept'),
-            equal_to(self.content_type))
+            equal_to(self.resource.accept))
         assert_that(self.resource.parse, called_once_with(data))
 
     def test_apply_get_200_invalid_json(self):
@@ -134,7 +136,7 @@ class TestConnector(unittest.TestCase):
             status=503,
             payload=payload)
 
-        with assert_raises(HTTPError) as ei:
+        with assert_raises(HTTPResponseException) as ei:
             self.connector.apply(
                 'GET',
                 self.resource,
@@ -157,7 +159,7 @@ class TestConnector(unittest.TestCase):
             status=503,
             payload=payload)
 
-        with assert_raises(HTTPError) as ei:
+        with assert_raises(HTTPResponseException) as ei:
             self.connector.apply(
                 'GET',
                 self.resource,
@@ -177,7 +179,7 @@ class TestConnector(unittest.TestCase):
             status=301,
             headers={'location': 'http://test'})
 
-        with assert_raises(HTTPError) as ei:
+        with assert_raises(HTTPResponseException) as ei:
             self.connector.apply(
                 'GET',
                 self.resource,
@@ -272,7 +274,7 @@ class TestConnector(unittest.TestCase):
             status=503,
             payload='Forbidden')
 
-        with assert_raises(HTTPError):
+        with assert_raises(HTTPResponseException):
             self.connector.apply(
                 'POST',
                 self.resource)

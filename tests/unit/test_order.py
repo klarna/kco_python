@@ -1,22 +1,22 @@
 import unittest
 from klarnacheckout.order import Order
 from mock import Mock
-from hamcrest import ( assert_that, equal_to, greater_than, instance_of,
-    is_in, contains)
-from tests.matchers import called_once_with, assert_raises
+from hamcrest import assert_that, equal_to, instance_of, is_in, contains
+from tests.matchers import assert_raises
+from matchmock import called_once_with
 
 
 class TestOrder(unittest.TestCase):
 
     def setUp(self):
         self._connector = Mock()
+        self._connector.base = 'http://stub'
         self._order = Order(self._connector)
 
-    def test_contenttype(self):
+    def test_accept_defaults_to_content_type(self):
         Order.content_type = "application/json"
-        assert_that(
-            self._order.get_content_type(),
-            equal_to("application/json"))
+        assert_that(self._order.accept,
+                    equal_to("application/json"))
 
     def test_getlocation_empty(self):
         assert_that(self._order.location, equal_to(None))
@@ -89,21 +89,23 @@ class TestOrder(unittest.TestCase):
             self._order[key]
 
     def test_create(self):
-        location = "http://stub"
+        location = "http://stub/checkout/orders"
         self._order.base_uri = location
         data = {"foo": "boo"}
         self._order.create(data)
 
-        self._connector.apply.assert_called_once_with(
-            "POST", self._order, {"url": location, "data": data})
+        assert_that(self._connector.apply,
+                    called_once_with("POST", self._order,
+                                     {"url": location, "data": data}))
 
     def test_fetch(self):
-        location = "http://stub"
+        location = "http://stub/foo"
         self._order.location = location
         self._order.fetch()
 
-        self._connector.apply.assert_called_once_with(
-            "GET", self._order, {"url": location})
+        assert_that(self._connector.apply,
+                    called_once_with("GET", self._order,
+                                     {"url": location}))
 
     def test_update(self):
         data = {"foo": "boo"}
@@ -111,15 +113,6 @@ class TestOrder(unittest.TestCase):
         self._order.location = location
         self._order.update(data)
 
-        self._connector.apply.assert_called_once_with(
-            "POST", self._order, {"url": location, "data": data})
-
-    def test_create_alternative_entry_point(self):
-        data = {"foo": "boo"}
-        uri = "http://klarna.com/foo/bar/15"
-        Order.base_uri = uri
-        order = Order(self._connector)
-        order.create(data)
-
-        self._connector.apply.assert_called_once_with(
-            "POST", order, {"url": uri, "data": data})
+        assert_that(self._connector.apply,
+                    called_once_with("POST", self._order,
+                                     {"url": location, "data": data}))
