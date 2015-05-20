@@ -39,15 +39,11 @@ connector = klarnacheckout.create_connector(shared_secret,
                                             klarnacheckout.BASE_TEST_URL)
 
 merchant = {
-    'id': eid,
-    'terms_uri': 'http://example.com/terms.html',
-    'checkout_uri': 'http://example.com/checkout',
-    'confirmation_uri': ('http://example.com/thank-you' +
-                         '?sid=123&klarna_order={checkout.order.uri}'),
-    # You can not receive push notification on
-    # a non publicly available uri
-    'push_uri': ('http://example.com/push' +
-                 '?sid=123&klarna_order={checkout.order.uri}')
+    'id': eid
+}
+
+merchant_reference = {
+    'orderid1': 'Some unique id ...'
 }
 
 # If the order should be activated automatically.
@@ -60,6 +56,7 @@ data = {
     'purchase_currency': 'SEK',
     'locale': 'sv-se',
     'merchant': merchant,
+    'merchant_reference': merchant_reference,
     'activate': activate,
     'cart': {'items': []}
 }
