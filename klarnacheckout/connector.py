@@ -18,7 +18,6 @@ Defines a class by which facilitates performing HTTP actions on resources.
 # limitations under the License.
 
 import json
-from exceptions import IOError
 
 try:
     from urllib.request import (build_opener, Request, BaseHandler,
