@@ -89,7 +89,7 @@ class Connector(object):
             resp = self.opener.open(req)
             return self.handle_response(resource, resp)
         except HTTPError as e:
-            raise HTTPResponseException(e.getcode(), e.message, e.read())
+            raise HTTPResponseException(e.getcode(), e.msg, e.read())
 
 
 class HTTPResponseException(IOError):
