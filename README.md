@@ -1,5 +1,8 @@
 ## Klarna Checkout Python library
-[![Build Status](https://travis-ci.org/klarna/kco_python.svg?branch=v2.0)](https://travis-ci.org/klarna/kco_python) [![Coverage Status](https://coveralls.io/repos/klarna/kco_python/badge.png?branch=v2.0)](https://coveralls.io/r/klarna/kco_python?branch=v2.0)
+
+[![PyPI Version][pypi-image]](https://pypi.python.org/pypi?name=klarnacheckout&:action=display)
+[![Build Status][travis-image]](https://travis-ci.org/klarna/kco_python)
+[![Coverage Status][coveralls-image]](https://coveralls.io/r/klarna/kco_python?branch=v2.0)
 
 Klarna Checkout is a revolutionary new payment solution that is changing the way
 people shop online. First, consumers verify their purchase with a minimal
@@ -52,3 +55,8 @@ please contact [integration@klarna.com](mailto:integration@klarna.com).
 ## License
 The Klarna Checkout Python library is released under
 [Apache License, Version 2.0](http://www.apache.org/LICENSE-2.0)
+
+
+[pypi-image]: https://img.shields.io/pypi/v/klarnacheckout.svg?style=flat
+[travis-image]: https://img.shields.io/travis/klarna/kco_python/v2.0.svg?style=flat
+[coveralls-image]: https://img.shields.io/coveralls/klarna/kco_python/v2.0.svg?style=flat
