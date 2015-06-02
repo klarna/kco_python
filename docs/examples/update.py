@@ -20,17 +20,16 @@ import klarnacheckout
 
 # Shared Secret
 shared_secret = 'shared_secret'
+order_id = 'ABC123'
 
 connector = klarnacheckout.create_connector(shared_secret,
                                             klarnacheckout.BASE_TEST_URL)
 
-checkout_uri = 'https://checkout.testdrive.klarna.com/checkout/orders/ABC123'
 
-order = klarnacheckout.Order(connector, checkout_uri)
+order = klarnacheckout.Order(connector, order_id)
 
 # Reset cart
-data = {'cart': []}
-data["cart"] = {"items": []}
+data = {'cart': {'items': []}}
 
 # Dictionary containing the cart items
 cart = (
@@ -52,7 +51,7 @@ cart = (
 )
 
 for item in cart:
-    data["cart"]["items"].append(item)
+    data['cart']['items'].append(item)
 
 try:
     order.update(data)

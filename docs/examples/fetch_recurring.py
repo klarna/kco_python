@@ -3,6 +3,11 @@
 
 This file demonstrates the use of the Klarna library to fetch the status of a
 recurring order.
+
+Note! First you must have created a regular aggregated order with the option
+"recurring" set to true.  After that order has received either status
+"checkout_complete" or "created" you can fetch that resource and retrieve the
+"recurring_token" property which is needed to create recurring orders.
 '''
 
 # Copyright 2015 Klarna AB
@@ -21,20 +26,17 @@ recurring order.
 
 import klarnacheckout
 
-# Shared Secret
 shared_secret = 'shared_secret'
-
-# Recurring order token
-token = 'abc123'
+recurring_token = 'ABC123'
 
 connector = klarnacheckout.create_connector(shared_secret,
                                             klarnacheckout.BASE_TEST_URL)
 
 try:
-    order = klarnacheckout.RecurringStatus(connector, token)
-    order.fetch()
+    recurring_status = klarnacheckout.RecurringStatus(connector, recurring_token)
+    recurring_status.fetch()
 
-    print(order['payment_method']);
+    print(str(recurring_status) + ' : %s' % recurring_status['payment_method']);
 except klarnacheckout.HTTPResponseException as e:
     print(e.json.get('http_status_message'))
     print(e.json.get('internal_message'))

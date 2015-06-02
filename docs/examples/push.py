@@ -28,21 +28,18 @@ session = {}
 # Instance of the HTTP library that is being used in the server
 request = {}
 
-# Shared Secret
 shared_secret = 'shared_secret'
+order_id = request['klarna_order_id']
 
 connector = klarnacheckout.create_connector(shared_secret,
                                             klarnacheckout.BASE_TEST_URL)
 
-checkout_uri = request['klarna_order']
-
 try:
-    order = klarnacheckout.Order(connector, checkout_uri)
+    order = klarnacheckout.Order(connector, order_id)
     order.fetch()
 except klarnacheckout.HTTPResponseException as e:
     print(e.json.get('http_status_message'))
     print(e.json.get('internal_message'))
-
     sys.exit()
 
 if order['status'] == 'checkout_complete':

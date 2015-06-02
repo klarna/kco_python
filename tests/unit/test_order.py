@@ -13,6 +13,11 @@ class TestOrder(unittest.TestCase):
         self._connector.base = 'http://stub'
         self._order = Order(self._connector)
 
+    def test_set_location_from_constructor(self):
+        order = Order(self._connector, '555')
+        assert_that(order.location,
+                    equal_to('http://stub/checkout/orders/555'))
+
     def test_accept_defaults_to_content_type(self):
         Order.content_type = "application/json"
         assert_that(self._order.accept,

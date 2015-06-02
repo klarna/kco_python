@@ -21,17 +21,14 @@ class Resource(object):
     # Connector
     connector = None
 
-    def __init__(self, connector, uri=None):
-        '''Create a new Order object
+    def __init__(self, connector):
+        '''Create a new resource object
 
         `connector` connector to use
-        `uri` uri of resource
         '''
         self.connector = connector
         self._location = None
         self._data = {}
-        if uri:
-            self._location = uri
 
     def __getitem__(self, key):
         '''Getter mapping'''
@@ -75,4 +72,4 @@ class Resource(object):
         return dict(self._data)
 
     def __repr__(self):
-        return '<Order %r>' % (self._location,)
+        return '<%s %r>' % (self.__class__.__name__, self._location,)

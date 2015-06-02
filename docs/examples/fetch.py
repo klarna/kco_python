@@ -18,17 +18,16 @@ This file demonstrates the use of the Klarna library to fetch an order.
 # limitations under the License.
 import klarnacheckout
 
-# Shared Secret
 shared_secret = 'shared_secret'
-
-checkout_uri = 'https://checkout.testdrive.klarna.com/checkout/orders/ABC123'
+order_id = 'ABC123'
 
 connector = klarnacheckout.create_connector(shared_secret,
                                             klarnacheckout.BASE_TEST_URL)
 
 try:
-    order = klarnacheckout.Order(connector, checkout_uri)
+    order = klarnacheckout.Order(connector, order_id)
     order.fetch()
+    print(order.marshal())
 except klarnacheckout.HTTPResponseException as e:
     print(e.json.get('http_status_message'))
     print(e.json.get('internal_message'))
