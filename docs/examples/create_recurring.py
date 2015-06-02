@@ -26,14 +26,9 @@ Note! First you must have created a regular aggregated order with the option
 
 import klarnacheckout
 
-# Merchant ID
-eid = "0"
-
-# Shared Secret
+eid = '0'
 shared_secret = 'shared_secret'
-
-# Recurring order token
-token = 'abc123'
+recurring_token = 'ABC123'
 
 connector = klarnacheckout.create_connector(shared_secret,
                                             klarnacheckout.BASE_TEST_URL)
@@ -75,7 +70,6 @@ address = {
 data['billing_address'] = address
 data['shipping_address'] = address
 
-# Dictionary containing the cart items
 cart = (
     {
         'quantity': 1,
@@ -98,10 +92,11 @@ for item in cart:
     data['cart']['items'].append(item)
 
 try:
-    order = klarnacheckout.RecurringOrder(connector, token)
-    order.create(data)
+    recurring_order = klarnacheckout.RecurringOrder(connector, recurring_token)
+    recurring_order.create(data)
 
-    print(order['invoice'] if activate else order['reservation'])
+    nr = recurring_order['invoice'] if activate else recurring_order['reservation']
+    print(str(recurring_order) + ' : %s' % nr)
 except klarnacheckout.HTTPResponseException as e:
     if e.code == 402:
         print(e.json.get('reason'))

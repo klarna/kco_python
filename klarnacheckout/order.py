@@ -26,6 +26,16 @@ class Order(Resource):
     # Content Type to use
     content_type = 'application/vnd.klarna.checkout.aggregated-order-v2+json'
 
+    def __init__(self, connector, id=None):
+        '''Create a new Order object
+
+        `connector` connector to use
+        `id` order id to use
+        '''
+        super(Order, self).__init__(connector)
+        if id:
+            self.location = connector.base + self.relative_uri + '/' + id
+
     def create(self, data):
         '''Create a new order
 

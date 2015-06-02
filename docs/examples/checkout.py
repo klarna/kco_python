@@ -23,10 +23,7 @@ import sys
 # Instance of the session library that is being used in the server
 session = {}
 
-# Merchant ID
-eid = "0"
-
-# Shared Secret
+eid = '0'
 shared_secret = 'shared_secret'
 
 connector = klarnacheckout.create_connector(shared_secret,
@@ -53,25 +50,25 @@ cart = (
     }
 )
 
-if 'klarna_checkout' in session:
+if 'klarna_order_id' in session:
     # Resume session
-    order = klarnacheckout.Order(connector, session["klarna_checkout"])
+    order = klarnacheckout.Order(connector, session['klarna_order_id'])
     try:
         order.fetch()
 
         update_data = {}
-        update_data["cart"] = {}
+        update_data['cart'] = {}
 
         # Reset cart
-        update_data["cart"]["items"] = []
+        update_data['cart']['items'] = []
         for item in cart:
-            update_data["cart"]["items"].append(item)
+            update_data['cart']['items'].append(item)
 
         order.update(update_data)
     except klarnacheckout.HTTPResponseException as e:
         # Reset session
         order = None
-        del session["klarna_checkout"]
+        del session['klarna_order_id']
 
         print(e.json.get('http_status_message'))
         print(e.json.get('internal_message'))
@@ -85,21 +82,22 @@ if order is None:
     create_data['purchase_country'] = 'SE'
     create_data['purchase_currency'] = 'SEK'
     create_data['locale'] = 'sv-se'
+    # create_data['recurring'] = True
     create_data['merchant'] = {
         'id': eid,
         'terms_uri': 'http://example.com/terms.html',
         'checkout_uri': 'http://example.com/checkout',
         'confirmation_uri': ('http://example.com/thank-you' +
-                             '?sid=123&klarna_order={checkout.order.uri}'),
+                             '?klarna_order_id={checkout.order.id}'),
         # You can not receive push notification on
         # a non publicly available uri
         'push_uri': ('http://example.com/push' +
-                     '?sid=123&klarna_order={checkout.order.uri}')
+                     '?klarna_order_id={checkout.order.id}')
     }
-    create_data["cart"] = {"items": []}
+    create_data['cart'] = {'items': []}
 
     for item in cart:
-        create_data["cart"]["items"].append(item)
+        create_data['cart']['items'].append(item)
 
     try:
         order = klarnacheckout.Order(connector)
@@ -111,7 +109,12 @@ if order is None:
         sys.exit();
 
 # Store location of checkout session
-session["klarna_checkout"] = order.location
+session['klarna_order_id'] = order['id']
 
 # Display checkout
-print "<div>%s</div>" % (order["gui"]["snippet"])
+snippet = u'<div>%s</div>' % (order['gui']['snippet'])
+
+if not isinstance(snippet, str):
+    snippet = snippet.encode('utf-8')
+
+print(snippet)

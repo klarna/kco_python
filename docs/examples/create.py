@@ -18,7 +18,38 @@ This file demonstrates the use of the Klarna library to create an order.
 # limitations under the License.
 import klarnacheckout
 
-# Dictionary containing the cart items
+eid = '0'
+shared_secret = 'shared_secret'
+
+connector = klarnacheckout.create_connector(shared_secret,
+                                            klarnacheckout.BASE_TEST_URL)
+
+order = None
+
+merchant = {
+    'id': eid,
+    'terms_uri': 'http://example.com/terms.html',
+    'checkout_uri': 'http://example.com/checkout',
+    'confirmation_uri': ('http://example.com/thank-you' +
+                         '?klarna_order_id={checkout.order.id}'),
+    # You can not receive push notification on
+    # a non publicly available uri
+    'push_uri': ('http://example.com/push' +
+                 '?klarna_order_id={checkout.order.id}')
+}
+
+data = {
+    'purchase_country': 'SE',
+    'purchase_currency': 'SEK',
+    'locale': 'sv-se',
+    'merchant': merchant,
+    'cart': {
+        'items': []
+    }
+}
+
+# data['recurring'] = True
+
 cart = (
     {
         'quantity': 1,
@@ -37,43 +68,13 @@ cart = (
     }
 )
 
-# Merchant ID
-eid = "0"
-
-# Shared Secret
-shared_secret = 'shared_secret'
-
-connector = klarnacheckout.create_connector(shared_secret,
-                                            klarnacheckout.BASE_TEST_URL)
-
-order = None
-
-merchant = {
-    'id': eid,
-    'terms_uri': 'http://example.com/terms.html',
-    'checkout_uri': 'http://example.com/checkout',
-    'confirmation_uri': ('http://example.com/thank-you' +
-                         '?sid=123&klarna_order={checkout.order.uri}'),
-    # You can not receive push notification on
-    # a non publicly available uri
-    'push_uri': ('http://example.com/push' +
-                 '?sid=123&klarna_order={checkout.order.uri}')
-}
-
-data = {
-    'purchase_country': 'SE',
-    'purchase_currency': 'SEK',
-    'locale': 'sv-se',
-    'merchant': merchant
-}
-data["cart"] = {"items": []}
-
 for item in cart:
-    data["cart"]["items"].append(item)
+    data['cart']['items'].append(item)
 
 try:
     order = klarnacheckout.Order(connector)
     order.create(data)
+    print(order)
 except klarnacheckout.HTTPResponseException as e:
     print(e.json.get('http_status_message'))
     print(e.json.get('internal_message'))

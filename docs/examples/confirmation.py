@@ -24,16 +24,15 @@ import sys
 # Instance of the session library that is being used in the server
 session = {}
 
-# Shared Secret
 shared_secret = 'shared_secret'
 
 connector = klarnacheckout.create_connector(shared_secret,
                                             klarnacheckout.BASE_TEST_URL)
 
-checkout_uri = session['klarna_checkout']
+order_id = session['klarna_order_id']
 
 try:
-	order = klarnacheckout.Order(connector, checkout_uri)
+	order = klarnacheckout.Order(connector, order_id)
 	order.fetch()
 except klarnacheckout.HTTPResponseException as e:
     print(e.json.get('http_status_message'))
@@ -43,5 +42,13 @@ except klarnacheckout.HTTPResponseException as e:
 if order['status'] != 'checkout_complete':
     raise Exception('Checkout not completed, redirect to checkout.py')
 
-print "<div>%s</div>" % (order["gui"]["snippet"])
-del session['klarna_checkout']
+# Display confirmation
+snippet = u'<div>%s</div>' % (order['gui']['snippet'])
+
+if not isinstance(snippet, str):
+    snippet = snippet.encode('utf-8')
+
+print(snippet)
+
+
+del session['klarna_order_id']

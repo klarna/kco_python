@@ -30,8 +30,13 @@ class RecurringOrder(Resource):
     accept = 'application/vnd.klarna.checkout.recurring-order-accepted-v1+json'
 
     def __init__(self, connector, token):
-        uri = connector.base + self.relative_uri % token
-        super(RecurringOrder, self).__init__(connector, uri)
+        '''Create a new RecurringOrder object
+
+        `connector` connector to use
+        `token` recurring token to use
+        '''
+        super(RecurringOrder, self).__init__(connector)
+        self.location = connector.base + self.relative_uri % token
 
     def create(self, data):
         '''Create a new order
@@ -53,8 +58,13 @@ class RecurringStatus(Resource):
     content_type = 'application/vnd.klarna.checkout.recurring-status-v1+json'
 
     def __init__(self, connector, token):
-        uri = connector.base + self.relative_uri % token
-        super(RecurringStatus, self).__init__(connector, uri)
+        '''Create a new RecurringStatus object
+
+        `connector` connector to use
+        `token` recurring token to use
+        '''
+        super(RecurringStatus, self).__init__(connector)
+        self.location = connector.base + self.relative_uri % token
 
     def fetch(self):
         '''Fetch order data'''
