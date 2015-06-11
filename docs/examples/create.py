@@ -74,7 +74,10 @@ for item in cart:
 try:
     order = klarnacheckout.Order(connector)
     order.create(data)
-    print(order)
+    order.fetch()
+
+    order_id = order['id']
+    print('Order ID: %s' % order_id)
 except klarnacheckout.HTTPResponseException as e:
     print(e.json.get('http_status_message'))
     print(e.json.get('internal_message'))
