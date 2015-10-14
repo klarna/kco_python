@@ -89,14 +89,16 @@ class Connector(object):
             resp = self.opener.open(req)
             return self.handle_response(resource, resp)
         except HTTPError as e:
-            raise HTTPResponseException(e.getcode(), e.msg, e.read())
+            args = [e.getcode(), e.msg, e.read()]
+            raise HTTPResponseException(str(args), *args)
 
 
 class HTTPResponseException(IOError):
-    def __init__(self, code, reason, payload):
+    def __init__(self, msg, code, reason, payload):
         self.code = code
         self.reason = reason
         self.payload = payload
+        super(HTTPResponseException, self).__init__(msg)
 
     @property
     def json(self):
