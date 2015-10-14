@@ -23,7 +23,7 @@ Additional fields can be added with the formatting taken care of.
 import sys
 import os
 
-__version__ = '3.0.0'
+__version__ = '3.0.1'
 
 
 class UserAgent(object):

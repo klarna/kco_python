@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='KlarnaCheckout',
-    version='3.0.0',
+    version='3.0.1',
     packages=['klarnacheckout'],
     license='Apache 2',
     description='Klarna Checkout library',
